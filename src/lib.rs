@@ -1230,6 +1230,7 @@ extern "C" {
     pub fn snd_pcm_status_get_avail(obj: *const snd_pcm_status_t) -> snd_pcm_uframes_t;
     pub fn snd_pcm_status_get_avail_max(obj: *const snd_pcm_status_t) -> snd_pcm_uframes_t;
     pub fn snd_pcm_status_get_overrange(obj: *const snd_pcm_status_t) -> snd_pcm_uframes_t;
+    pub fn snd_pcm_status_set_audio_htstamp_config(obj: *mut snd_pcm_status_t, audio_tstamp_config: *mut snd_pcm_audio_tstamp_config_t);
     pub fn snd_pcm_type_name(_type: snd_pcm_type_t) -> *const c_char;
     pub fn snd_pcm_stream_name(stream: snd_pcm_stream_t) -> *const c_char;
     pub fn snd_pcm_access_name(_access: snd_pcm_access_t) -> *const c_char;
@@ -1321,6 +1322,7 @@ extern "C" {
     pub fn snd_pcm_hw_params_set_tick_time_near(pcm: *mut snd_pcm_t, params: *mut snd_pcm_hw_params_t, val: *mut c_uint, dir: *mut c_int) -> c_int;
     pub fn snd_pcm_hw_params_set_tick_time_first(pcm: *mut snd_pcm_t, params: *mut snd_pcm_hw_params_t, val: *mut c_uint, dir: *mut c_int) -> c_int;
     pub fn snd_pcm_hw_params_set_tick_time_last(pcm: *mut snd_pcm_t, params: *mut snd_pcm_hw_params_t, val: *mut c_uint, dir: *mut c_int) -> c_int;
+    pub fn snd_pcm_hw_params_supports_audio_ts_type(params: *const snd_pcm_hw_params_t, type_: c_int) -> c_int;
     pub fn snd_rawmidi_open(in_rmidi: *mut *mut snd_rawmidi_t, out_rmidi: *mut *mut snd_rawmidi_t, name: *const c_char, mode: c_int) -> c_int;
     pub fn snd_rawmidi_open_lconf(in_rmidi: *mut *mut snd_rawmidi_t, out_rmidi: *mut *mut snd_rawmidi_t, name: *const c_char, mode: c_int, lconf: *mut snd_config_t) -> c_int;
     pub fn snd_rawmidi_close(rmidi: *mut snd_rawmidi_t) -> c_int;
@@ -2128,3 +2130,240 @@ extern "C" {
     pub fn snd_midi_event_encode_byte(dev: *mut snd_midi_event_t, c: c_int, ev: *mut snd_seq_event_t) -> c_int;
     pub fn snd_midi_event_decode(dev: *mut snd_midi_event_t, buf: *mut c_uchar, count: c_long, ev: *const snd_seq_event_t) -> c_long;
 }
+
+// Added by new bindgen version
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct __BindgenBitfieldUnit<Storage, Align>
+where
+    Storage: AsRef<[u8]> + AsMut<[u8]>,
+{
+    storage: Storage,
+    align: [Align; 0],
+}
+
+impl<Storage, Align> __BindgenBitfieldUnit<Storage, Align>
+where
+    Storage: AsRef<[u8]> + AsMut<[u8]>,
+{
+    #[inline]
+    pub fn new(storage: Storage) -> Self {
+        Self { storage, align: [] }
+    }
+
+    #[inline]
+    pub fn get_bit(&self, index: usize) -> bool {
+        debug_assert!(index / 8 < self.storage.as_ref().len());
+
+        let byte_index = index / 8;
+        let byte = self.storage.as_ref()[byte_index];
+
+        let bit_index = index % 8;
+        let mask = 1 << bit_index;
+
+        byte & mask == mask
+    }
+
+    #[inline]
+    pub fn set_bit(&mut self, index: usize, val: bool) {
+        debug_assert!(index / 8 < self.storage.as_ref().len());
+
+        let byte_index = index / 8;
+        let byte = &mut self.storage.as_mut()[byte_index];
+
+        let bit_index = index % 8;
+        let mask = 1 << bit_index;
+
+        if val {
+            *byte |= mask;
+        } else {
+            *byte &= !mask;
+        }
+    }
+
+    #[inline]
+    pub fn get(&self, bit_offset: usize, bit_width: u8) -> u64 {
+        debug_assert!(bit_width <= 64);
+        debug_assert!(bit_offset / 8 < self.storage.as_ref().len());
+        debug_assert!((bit_offset + (bit_width as usize)) / 8 <= self.storage.as_ref().len());
+
+        let mut val = 0;
+
+        for i in 0..(bit_width as usize) {
+            if self.get_bit(i + bit_offset) {
+                val |= 1 << i;
+            }
+        }
+
+        val
+    }
+
+    #[inline]
+    pub fn set(&mut self, bit_offset: usize, bit_width: u8, val: u64) {
+        debug_assert!(bit_width <= 64);
+        debug_assert!(bit_offset / 8 < self.storage.as_ref().len());
+        debug_assert!((bit_offset + (bit_width as usize)) / 8 <= self.storage.as_ref().len());
+
+        for i in 0..(bit_width as usize) {
+            let mask = 1 << i;
+            let val_bit_is_set = val & mask == mask;
+            self.set_bit(i + bit_offset, val_bit_is_set);
+        }
+    }
+}
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _snd_pcm_audio_tstamp_config {
+    pub _bitfield_1: __BindgenBitfieldUnit<[u8; 1usize], u8>,
+    pub __bindgen_padding_0: [u8; 3usize],
+    pub __bindgen_align: [u32; 0usize],
+}
+#[test]
+fn bindgen_test_layout__snd_pcm_audio_tstamp_config() {
+    assert_eq!(
+        ::std::mem::size_of::<_snd_pcm_audio_tstamp_config>(),
+        4usize,
+        concat!("Size of: ", stringify!(_snd_pcm_audio_tstamp_config))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<_snd_pcm_audio_tstamp_config>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_snd_pcm_audio_tstamp_config))
+    );
+}
+impl _snd_pcm_audio_tstamp_config {
+    #[inline]
+    pub fn type_requested(&self) -> ::std::os::raw::c_uint {
+        unsafe { ::std::mem::transmute(self._bitfield_1.get(0usize, 4u8) as u32) }
+    }
+    #[inline]
+    pub fn set_type_requested(&mut self, val: ::std::os::raw::c_uint) {
+        unsafe {
+            let val: u32 = ::std::mem::transmute(val);
+            self._bitfield_1.set(0usize, 4u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn report_delay(&self) -> ::std::os::raw::c_uint {
+        unsafe { ::std::mem::transmute(self._bitfield_1.get(4usize, 1u8) as u32) }
+    }
+    #[inline]
+    pub fn set_report_delay(&mut self, val: ::std::os::raw::c_uint) {
+        unsafe {
+            let val: u32 = ::std::mem::transmute(val);
+            self._bitfield_1.set(4usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn new_bitfield_1(
+        type_requested: ::std::os::raw::c_uint,
+        report_delay: ::std::os::raw::c_uint,
+    ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
+        __bindgen_bitfield_unit.set(0usize, 4u8, {
+            let type_requested: u32 = unsafe { ::std::mem::transmute(type_requested) };
+            type_requested as u64
+        });
+        __bindgen_bitfield_unit.set(4usize, 1u8, {
+            let report_delay: u32 = unsafe { ::std::mem::transmute(report_delay) };
+            report_delay as u64
+        });
+        __bindgen_bitfield_unit
+    }
+}
+pub type snd_pcm_audio_tstamp_config_t = _snd_pcm_audio_tstamp_config;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _snd_pcm_audio_tstamp_report {
+    pub _bitfield_1: __BindgenBitfieldUnit<[u8; 1usize], u8>,
+    pub accuracy: ::std::os::raw::c_uint,
+}
+#[test]
+fn bindgen_test_layout__snd_pcm_audio_tstamp_report() {
+    assert_eq!(
+        ::std::mem::size_of::<_snd_pcm_audio_tstamp_report>(),
+        8usize,
+        concat!("Size of: ", stringify!(_snd_pcm_audio_tstamp_report))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<_snd_pcm_audio_tstamp_report>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_snd_pcm_audio_tstamp_report))
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<_snd_pcm_audio_tstamp_report>())).accuracy as *const _ as usize
+        },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_snd_pcm_audio_tstamp_report),
+            "::",
+            stringify!(accuracy)
+        )
+    );
+}
+impl _snd_pcm_audio_tstamp_report {
+    #[inline]
+    pub fn valid(&self) -> ::std::os::raw::c_uint {
+        unsafe { ::std::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u32) }
+    }
+    #[inline]
+    pub fn set_valid(&mut self, val: ::std::os::raw::c_uint) {
+        unsafe {
+            let val: u32 = ::std::mem::transmute(val);
+            self._bitfield_1.set(0usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn actual_type(&self) -> ::std::os::raw::c_uint {
+        unsafe { ::std::mem::transmute(self._bitfield_1.get(1usize, 4u8) as u32) }
+    }
+    #[inline]
+    pub fn set_actual_type(&mut self, val: ::std::os::raw::c_uint) {
+        unsafe {
+            let val: u32 = ::std::mem::transmute(val);
+            self._bitfield_1.set(1usize, 4u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn accuracy_report(&self) -> ::std::os::raw::c_uint {
+        unsafe { ::std::mem::transmute(self._bitfield_1.get(5usize, 1u8) as u32) }
+    }
+    #[inline]
+    pub fn set_accuracy_report(&mut self, val: ::std::os::raw::c_uint) {
+        unsafe {
+            let val: u32 = ::std::mem::transmute(val);
+            self._bitfield_1.set(5usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn new_bitfield_1(
+        valid: ::std::os::raw::c_uint,
+        actual_type: ::std::os::raw::c_uint,
+        accuracy_report: ::std::os::raw::c_uint,
+    ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
+        __bindgen_bitfield_unit.set(0usize, 1u8, {
+            let valid: u32 = unsafe { ::std::mem::transmute(valid) };
+            valid as u64
+        });
+        __bindgen_bitfield_unit.set(1usize, 4u8, {
+            let actual_type: u32 = unsafe { ::std::mem::transmute(actual_type) };
+            actual_type as u64
+        });
+        __bindgen_bitfield_unit.set(5usize, 1u8, {
+            let accuracy_report: u32 = unsafe { ::std::mem::transmute(accuracy_report) };
+            accuracy_report as u64
+        });
+        __bindgen_bitfield_unit
+    }
+}
+pub type snd_pcm_audio_tstamp_report_t = _snd_pcm_audio_tstamp_report;
+
+
