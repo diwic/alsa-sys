@@ -112,6 +112,12 @@ impl<T> ::std::fmt::Debug for __IncompleteArrayField<T> {
     }
 }
 extern "C" {
+    #[doc = "  \\defgroup Global Global defines and functions"]
+    #[doc = "  Global defines and functions."]
+    #[doc = "  \\par"]
+    #[doc = "  The ALSA library implementation uses these macros and functions."]
+    #[doc = "  Most applications probably do not need them."]
+    #[doc = "  \\{"]
     pub fn snd_asoundlib_version() -> *const ::std::os::raw::c_char;
 }
 #[repr(C)]
@@ -120,6 +126,13 @@ pub struct snd_dlsym_link {
     pub next: *mut snd_dlsym_link,
     pub dlsym_name: *const ::std::os::raw::c_char,
     pub dlsym_ptr: *const ::std::os::raw::c_void,
+}
+extern "C" {
+    pub fn snd_dlpath(
+        path: *mut ::std::os::raw::c_char,
+        path_len: usize,
+        name: *const ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn snd_dlopen(
@@ -144,7 +157,14 @@ extern "C" {
 pub struct _snd_async_handler {
     _unused: [u8; 0],
 }
+#[doc = " \\brief Internal structure for an async notification client handler."]
+#[doc = ""]
+#[doc = " The ALSA library uses a pointer to this structure as a handle to an async"]
+#[doc = " notification object. Applications don't access its contents directly."]
 pub type snd_async_handler_t = _snd_async_handler;
+#[doc = " \\brief Async notification callback."]
+#[doc = ""]
+#[doc = " See the #snd_async_add_handler function for details."]
 pub type snd_async_callback_t =
     ::std::option::Option<unsafe extern "C" fn(handler: *mut snd_async_handler_t)>;
 extern "C" {
@@ -192,17 +212,27 @@ extern "C" {
         result: *mut *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
+#[doc = " Timestamp"]
 pub type snd_timestamp_t = timeval;
+#[doc = " Hi-res timestamp"]
 pub type snd_htimestamp_t = timespec;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_input {
     _unused: [u8; 0],
 }
+#[doc = " \\brief Internal structure for an input object."]
+#[doc = ""]
+#[doc = " The ALSA library uses a pointer to this structure as a handle to an"]
+#[doc = " input object. Applications don't access its contents directly."]
 pub type snd_input_t = _snd_input;
+#[doc = " Input from a stdio stream."]
 pub const SND_INPUT_STDIO: _snd_input_type = 0;
+#[doc = " Input from a memory buffer."]
 pub const SND_INPUT_BUFFER: _snd_input_type = 1;
+#[doc = " Input type."]
 pub type _snd_input_type = u32;
+#[doc = " Input type."]
 pub use self::_snd_input_type as snd_input_type_t;
 extern "C" {
     pub fn snd_input_stdio_open(
@@ -256,10 +286,18 @@ extern "C" {
 pub struct _snd_output {
     _unused: [u8; 0],
 }
+#[doc = " \\brief Internal structure for an output object."]
+#[doc = ""]
+#[doc = " The ALSA library uses a pointer to this structure as a handle to an"]
+#[doc = " output object. Applications don't access its contents directly."]
 pub type snd_output_t = _snd_output;
+#[doc = " Output to a stdio stream."]
 pub const SND_OUTPUT_STDIO: _snd_output_type = 0;
+#[doc = " Output to a memory buffer."]
 pub const SND_OUTPUT_BUFFER: _snd_output_type = 1;
+#[doc = " Output type."]
 pub type _snd_output_type = u32;
+#[doc = " Output type."]
 pub use self::_snd_output_type as snd_output_type_t;
 extern "C" {
     pub fn snd_output_stdio_open(
@@ -319,6 +357,16 @@ extern "C" {
 extern "C" {
     pub fn snd_strerror(errnum: ::std::os::raw::c_int) -> *const ::std::os::raw::c_char;
 }
+#[doc = " \\brief Error handler callback."]
+#[doc = " \\param file Source file name."]
+#[doc = " \\param line Line number."]
+#[doc = " \\param function Function name."]
+#[doc = " \\param err Value of \\c errno, or 0 if not relevant."]
+#[doc = " \\param fmt \\c printf(3) format."]
+#[doc = " \\param ... \\c printf(3) arguments."]
+#[doc = ""]
+#[doc = " A function of this type is called by the ALSA library when an error occurs."]
+#[doc = " This function usually shows the message on the screen, and/or logs it."]
 pub type snd_lib_error_handler_t = ::std::option::Option<
     unsafe extern "C" fn(
         file: *const ::std::os::raw::c_char,
@@ -332,6 +380,7 @@ pub type snd_lib_error_handler_t = ::std::option::Option<
 extern "C" {
     pub fn snd_lib_error_set_handler(handler: snd_lib_error_handler_t) -> ::std::os::raw::c_int;
 }
+#[doc = " Local error handler function type"]
 pub type snd_local_error_handler_t = ::std::option::Option<
     unsafe extern "C" fn(
         file: *const ::std::os::raw::c_char,
@@ -345,31 +394,51 @@ pub type snd_local_error_handler_t = ::std::option::Option<
 extern "C" {
     pub fn snd_lib_error_set_local(func: snd_local_error_handler_t) -> snd_local_error_handler_t;
 }
+#[doc = " Integer number."]
 pub const SND_CONFIG_TYPE_INTEGER: _snd_config_type = 0;
+#[doc = " 64-bit integer number."]
 pub const SND_CONFIG_TYPE_INTEGER64: _snd_config_type = 1;
+#[doc = " Real number."]
 pub const SND_CONFIG_TYPE_REAL: _snd_config_type = 2;
+#[doc = " Character string."]
 pub const SND_CONFIG_TYPE_STRING: _snd_config_type = 3;
+#[doc = " Pointer (runtime only, cannot be saved)."]
 pub const SND_CONFIG_TYPE_POINTER: _snd_config_type = 4;
+#[doc = " Compound node."]
 pub const SND_CONFIG_TYPE_COMPOUND: _snd_config_type = 1024;
+#[doc = " \\brief Configuration node type."]
 pub type _snd_config_type = u32;
+#[doc = " \\brief Configuration node type."]
 pub use self::_snd_config_type as snd_config_type_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_config {
     _unused: [u8; 0],
 }
+#[doc = " \\brief Internal structure for a configuration node object."]
+#[doc = ""]
+#[doc = " The ALSA library uses a pointer to this structure as a handle to a"]
+#[doc = " configuration node. Applications don't access its contents directly."]
 pub type snd_config_t = _snd_config;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_config_iterator {
     _unused: [u8; 0],
 }
+#[doc = " \\brief Type for a configuration compound iterator."]
+#[doc = ""]
+#[doc = " The ALSA library uses this pointer type as a handle to a configuration"]
+#[doc = " compound iterator. Applications don't directly access the contents of"]
+#[doc = " the structure pointed to by this type."]
 pub type snd_config_iterator_t = *mut _snd_config_iterator;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_config_update {
     _unused: [u8; 0],
 }
+#[doc = " \\brief Internal structure for a configuration private update object."]
+#[doc = ""]
+#[doc = " The ALSA library uses this structure to save private update information."]
 pub type snd_config_update_t = _snd_config_update;
 extern "C" {
     pub fn snd_config_topdir() -> *const ::std::os::raw::c_char;
@@ -583,6 +652,9 @@ extern "C" {
     pub fn snd_config_get_type(config: *const snd_config_t) -> snd_config_type_t;
 }
 extern "C" {
+    pub fn snd_config_is_array(config: *const snd_config_t) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn snd_config_set_id(
         config: *mut snd_config_t,
         id: *const ::std::os::raw::c_char,
@@ -702,12 +774,17 @@ extern "C" {
 extern "C" {
     pub fn snd_config_get_ctl_iface(conf: *const snd_config_t) -> ::std::os::raw::c_int;
 }
+#[doc = " Device-name list element"]
 pub type snd_devname_t = snd_devname;
+#[doc = " Device-name list element (definition)"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_devname {
+    #[doc = "< Device name string"]
     pub name: *mut ::std::os::raw::c_char,
+    #[doc = "< Comments"]
     pub comment: *mut ::std::os::raw::c_char,
+    #[doc = "< Next pointer"]
     pub next: *mut snd_devname_t,
 }
 extern "C" {
@@ -724,173 +801,337 @@ extern "C" {
 pub struct _snd_pcm_info {
     _unused: [u8; 0],
 }
+#[doc = " PCM generic info container"]
 pub type snd_pcm_info_t = _snd_pcm_info;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_hw_params {
     _unused: [u8; 0],
 }
+#[doc = " PCM hardware configuration space container"]
+#[doc = ""]
+#[doc = "  snd_pcm_hw_params_t is an opaque structure which contains a set of possible"]
+#[doc = "  PCM hardware configurations. For example, a given instance might include a"]
+#[doc = "  range of buffer sizes, a range of period sizes, and a set of several sample"]
+#[doc = "  formats. Some subset of all possible combinations these sets may be valid,"]
+#[doc = "  but not necessarily any combination will be valid."]
+#[doc = ""]
+#[doc = "  When a parameter is set or restricted using a snd_pcm_hw_params_set*"]
+#[doc = "  function, all of the other ranges will be updated to exclude as many"]
+#[doc = "  impossible configurations as possible. Attempting to set a parameter"]
+#[doc = "  outside of its acceptable range will result in the function failing"]
+#[doc = "  and an error code being returned."]
 pub type snd_pcm_hw_params_t = _snd_pcm_hw_params;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_sw_params {
     _unused: [u8; 0],
 }
+#[doc = " PCM software configuration container"]
 pub type snd_pcm_sw_params_t = _snd_pcm_sw_params;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_status {
     _unused: [u8; 0],
 }
+#[doc = " PCM status container"]
 pub type snd_pcm_status_t = _snd_pcm_status;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_access_mask {
     _unused: [u8; 0],
 }
+#[doc = " PCM access types mask"]
 pub type snd_pcm_access_mask_t = _snd_pcm_access_mask;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_format_mask {
     _unused: [u8; 0],
 }
+#[doc = " PCM formats mask"]
 pub type snd_pcm_format_mask_t = _snd_pcm_format_mask;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_subformat_mask {
     _unused: [u8; 0],
 }
+#[doc = " PCM subformats mask"]
 pub type snd_pcm_subformat_mask_t = _snd_pcm_subformat_mask;
+#[doc = " standard device"]
 pub const SND_PCM_CLASS_GENERIC: _snd_pcm_class = 0;
+#[doc = " multichannel device"]
 pub const SND_PCM_CLASS_MULTI: _snd_pcm_class = 1;
+#[doc = " software modem device"]
 pub const SND_PCM_CLASS_MODEM: _snd_pcm_class = 2;
+#[doc = " digitizer device"]
 pub const SND_PCM_CLASS_DIGITIZER: _snd_pcm_class = 3;
+#[doc = " digitizer device"]
 pub const SND_PCM_CLASS_LAST: _snd_pcm_class = 3;
+#[doc = " PCM class"]
 pub type _snd_pcm_class = u32;
+#[doc = " PCM class"]
 pub use self::_snd_pcm_class as snd_pcm_class_t;
+#[doc = " subdevices are mixed together"]
 pub const SND_PCM_SUBCLASS_GENERIC_MIX: _snd_pcm_subclass = 0;
+#[doc = " multichannel subdevices are mixed together"]
 pub const SND_PCM_SUBCLASS_MULTI_MIX: _snd_pcm_subclass = 1;
+#[doc = " multichannel subdevices are mixed together"]
 pub const SND_PCM_SUBCLASS_LAST: _snd_pcm_subclass = 1;
+#[doc = " PCM subclass"]
 pub type _snd_pcm_subclass = u32;
+#[doc = " PCM subclass"]
 pub use self::_snd_pcm_subclass as snd_pcm_subclass_t;
+#[doc = " Playback stream"]
 pub const SND_PCM_STREAM_PLAYBACK: _snd_pcm_stream = 0;
+#[doc = " Capture stream"]
 pub const SND_PCM_STREAM_CAPTURE: _snd_pcm_stream = 1;
+#[doc = " Capture stream"]
 pub const SND_PCM_STREAM_LAST: _snd_pcm_stream = 1;
+#[doc = " PCM stream (direction)"]
 pub type _snd_pcm_stream = u32;
+#[doc = " PCM stream (direction)"]
 pub use self::_snd_pcm_stream as snd_pcm_stream_t;
+#[doc = " mmap access with simple interleaved channels"]
 pub const SND_PCM_ACCESS_MMAP_INTERLEAVED: _snd_pcm_access = 0;
+#[doc = " mmap access with simple non interleaved channels"]
 pub const SND_PCM_ACCESS_MMAP_NONINTERLEAVED: _snd_pcm_access = 1;
+#[doc = " mmap access with complex placement"]
 pub const SND_PCM_ACCESS_MMAP_COMPLEX: _snd_pcm_access = 2;
+#[doc = " snd_pcm_readi/snd_pcm_writei access"]
 pub const SND_PCM_ACCESS_RW_INTERLEAVED: _snd_pcm_access = 3;
+#[doc = " snd_pcm_readn/snd_pcm_writen access"]
 pub const SND_PCM_ACCESS_RW_NONINTERLEAVED: _snd_pcm_access = 4;
+#[doc = " snd_pcm_readn/snd_pcm_writen access"]
 pub const SND_PCM_ACCESS_LAST: _snd_pcm_access = 4;
+#[doc = " PCM access type"]
 pub type _snd_pcm_access = u32;
+#[doc = " PCM access type"]
 pub use self::_snd_pcm_access as snd_pcm_access_t;
+#[doc = " Unknown"]
 pub const SND_PCM_FORMAT_UNKNOWN: _snd_pcm_format = -1;
+#[doc = " Signed 8 bit"]
 pub const SND_PCM_FORMAT_S8: _snd_pcm_format = 0;
+#[doc = " Unsigned 8 bit"]
 pub const SND_PCM_FORMAT_U8: _snd_pcm_format = 1;
+#[doc = " Signed 16 bit Little Endian"]
 pub const SND_PCM_FORMAT_S16_LE: _snd_pcm_format = 2;
+#[doc = " Signed 16 bit Big Endian"]
 pub const SND_PCM_FORMAT_S16_BE: _snd_pcm_format = 3;
+#[doc = " Unsigned 16 bit Little Endian"]
 pub const SND_PCM_FORMAT_U16_LE: _snd_pcm_format = 4;
+#[doc = " Unsigned 16 bit Big Endian"]
 pub const SND_PCM_FORMAT_U16_BE: _snd_pcm_format = 5;
+#[doc = " Signed 24 bit Little Endian using low three bytes in 32-bit word"]
 pub const SND_PCM_FORMAT_S24_LE: _snd_pcm_format = 6;
+#[doc = " Signed 24 bit Big Endian using low three bytes in 32-bit word"]
 pub const SND_PCM_FORMAT_S24_BE: _snd_pcm_format = 7;
+#[doc = " Unsigned 24 bit Little Endian using low three bytes in 32-bit word"]
 pub const SND_PCM_FORMAT_U24_LE: _snd_pcm_format = 8;
+#[doc = " Unsigned 24 bit Big Endian using low three bytes in 32-bit word"]
 pub const SND_PCM_FORMAT_U24_BE: _snd_pcm_format = 9;
+#[doc = " Signed 32 bit Little Endian"]
 pub const SND_PCM_FORMAT_S32_LE: _snd_pcm_format = 10;
+#[doc = " Signed 32 bit Big Endian"]
 pub const SND_PCM_FORMAT_S32_BE: _snd_pcm_format = 11;
+#[doc = " Unsigned 32 bit Little Endian"]
 pub const SND_PCM_FORMAT_U32_LE: _snd_pcm_format = 12;
+#[doc = " Unsigned 32 bit Big Endian"]
 pub const SND_PCM_FORMAT_U32_BE: _snd_pcm_format = 13;
+#[doc = " Float 32 bit Little Endian, Range -1.0 to 1.0"]
 pub const SND_PCM_FORMAT_FLOAT_LE: _snd_pcm_format = 14;
+#[doc = " Float 32 bit Big Endian, Range -1.0 to 1.0"]
 pub const SND_PCM_FORMAT_FLOAT_BE: _snd_pcm_format = 15;
+#[doc = " Float 64 bit Little Endian, Range -1.0 to 1.0"]
 pub const SND_PCM_FORMAT_FLOAT64_LE: _snd_pcm_format = 16;
+#[doc = " Float 64 bit Big Endian, Range -1.0 to 1.0"]
 pub const SND_PCM_FORMAT_FLOAT64_BE: _snd_pcm_format = 17;
+#[doc = " IEC-958 Little Endian"]
 pub const SND_PCM_FORMAT_IEC958_SUBFRAME_LE: _snd_pcm_format = 18;
+#[doc = " IEC-958 Big Endian"]
 pub const SND_PCM_FORMAT_IEC958_SUBFRAME_BE: _snd_pcm_format = 19;
+#[doc = " Mu-Law"]
 pub const SND_PCM_FORMAT_MU_LAW: _snd_pcm_format = 20;
+#[doc = " A-Law"]
 pub const SND_PCM_FORMAT_A_LAW: _snd_pcm_format = 21;
+#[doc = " Ima-ADPCM"]
 pub const SND_PCM_FORMAT_IMA_ADPCM: _snd_pcm_format = 22;
+#[doc = " MPEG"]
 pub const SND_PCM_FORMAT_MPEG: _snd_pcm_format = 23;
+#[doc = " GSM"]
 pub const SND_PCM_FORMAT_GSM: _snd_pcm_format = 24;
+#[doc = " Signed 20bit Little Endian in 4bytes format, LSB justified"]
 pub const SND_PCM_FORMAT_S20_LE: _snd_pcm_format = 25;
+#[doc = " Signed 20bit Big Endian in 4bytes format, LSB justified"]
 pub const SND_PCM_FORMAT_S20_BE: _snd_pcm_format = 26;
+#[doc = " Unsigned 20bit Little Endian in 4bytes format, LSB justified"]
 pub const SND_PCM_FORMAT_U20_LE: _snd_pcm_format = 27;
+#[doc = " Unsigned 20bit Big Endian in 4bytes format, LSB justified"]
 pub const SND_PCM_FORMAT_U20_BE: _snd_pcm_format = 28;
+#[doc = " Special"]
 pub const SND_PCM_FORMAT_SPECIAL: _snd_pcm_format = 31;
+#[doc = " Signed 24bit Little Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_S24_3LE: _snd_pcm_format = 32;
+#[doc = " Signed 24bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_S24_3BE: _snd_pcm_format = 33;
+#[doc = " Unsigned 24bit Little Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_U24_3LE: _snd_pcm_format = 34;
+#[doc = " Unsigned 24bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_U24_3BE: _snd_pcm_format = 35;
+#[doc = " Signed 20bit Little Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_S20_3LE: _snd_pcm_format = 36;
+#[doc = " Signed 20bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_S20_3BE: _snd_pcm_format = 37;
+#[doc = " Unsigned 20bit Little Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_U20_3LE: _snd_pcm_format = 38;
+#[doc = " Unsigned 20bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_U20_3BE: _snd_pcm_format = 39;
+#[doc = " Signed 18bit Little Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_S18_3LE: _snd_pcm_format = 40;
+#[doc = " Signed 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_S18_3BE: _snd_pcm_format = 41;
+#[doc = " Unsigned 18bit Little Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_U18_3LE: _snd_pcm_format = 42;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_U18_3BE: _snd_pcm_format = 43;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_G723_24: _snd_pcm_format = 44;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_G723_24_1B: _snd_pcm_format = 45;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_G723_40: _snd_pcm_format = 46;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_G723_40_1B: _snd_pcm_format = 47;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_DSD_U8: _snd_pcm_format = 48;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_DSD_U16_LE: _snd_pcm_format = 49;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_DSD_U32_LE: _snd_pcm_format = 50;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_DSD_U16_BE: _snd_pcm_format = 51;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_DSD_U32_BE: _snd_pcm_format = 52;
+#[doc = " Unsigned 18bit Big Endian in 3bytes format"]
 pub const SND_PCM_FORMAT_LAST: _snd_pcm_format = 52;
+#[doc = " Signed 16 bit CPU endian"]
 pub const SND_PCM_FORMAT_S16: _snd_pcm_format = 2;
+#[doc = " Unsigned 16 bit CPU endian"]
 pub const SND_PCM_FORMAT_U16: _snd_pcm_format = 4;
+#[doc = " Signed 24 bit CPU endian"]
 pub const SND_PCM_FORMAT_S24: _snd_pcm_format = 6;
+#[doc = " Unsigned 24 bit CPU endian"]
 pub const SND_PCM_FORMAT_U24: _snd_pcm_format = 8;
+#[doc = " Signed 32 bit CPU endian"]
 pub const SND_PCM_FORMAT_S32: _snd_pcm_format = 10;
+#[doc = " Unsigned 32 bit CPU endian"]
 pub const SND_PCM_FORMAT_U32: _snd_pcm_format = 12;
+#[doc = " Float 32 bit CPU endian"]
 pub const SND_PCM_FORMAT_FLOAT: _snd_pcm_format = 14;
+#[doc = " Float 64 bit CPU endian"]
 pub const SND_PCM_FORMAT_FLOAT64: _snd_pcm_format = 16;
+#[doc = " IEC-958 CPU Endian"]
 pub const SND_PCM_FORMAT_IEC958_SUBFRAME: _snd_pcm_format = 18;
+#[doc = " Signed 20bit in 4bytes format, LSB justified, CPU Endian"]
 pub const SND_PCM_FORMAT_S20: _snd_pcm_format = 25;
+#[doc = " Unsigned 20bit in 4bytes format, LSB justified, CPU Endian"]
 pub const SND_PCM_FORMAT_U20: _snd_pcm_format = 27;
+#[doc = " PCM sample format"]
 pub type _snd_pcm_format = i32;
+#[doc = " PCM sample format"]
 pub use self::_snd_pcm_format as snd_pcm_format_t;
+#[doc = " Standard"]
 pub const SND_PCM_SUBFORMAT_STD: _snd_pcm_subformat = 0;
+#[doc = " Standard"]
 pub const SND_PCM_SUBFORMAT_LAST: _snd_pcm_subformat = 0;
+#[doc = " PCM sample subformat"]
 pub type _snd_pcm_subformat = u32;
+#[doc = " PCM sample subformat"]
 pub use self::_snd_pcm_subformat as snd_pcm_subformat_t;
+#[doc = " Open"]
 pub const SND_PCM_STATE_OPEN: _snd_pcm_state = 0;
+#[doc = " Setup installed"]
 pub const SND_PCM_STATE_SETUP: _snd_pcm_state = 1;
+#[doc = " Ready to start"]
 pub const SND_PCM_STATE_PREPARED: _snd_pcm_state = 2;
+#[doc = " Running"]
 pub const SND_PCM_STATE_RUNNING: _snd_pcm_state = 3;
+#[doc = " Stopped: underrun (playback) or overrun (capture) detected"]
 pub const SND_PCM_STATE_XRUN: _snd_pcm_state = 4;
+#[doc = " Draining: running (playback) or stopped (capture)"]
 pub const SND_PCM_STATE_DRAINING: _snd_pcm_state = 5;
+#[doc = " Paused"]
 pub const SND_PCM_STATE_PAUSED: _snd_pcm_state = 6;
+#[doc = " Hardware is suspended"]
 pub const SND_PCM_STATE_SUSPENDED: _snd_pcm_state = 7;
+#[doc = " Hardware is disconnected"]
 pub const SND_PCM_STATE_DISCONNECTED: _snd_pcm_state = 8;
+#[doc = " Hardware is disconnected"]
 pub const SND_PCM_STATE_LAST: _snd_pcm_state = 8;
+#[doc = " Private - used internally in the library - do not use"]
 pub const SND_PCM_STATE_PRIVATE1: _snd_pcm_state = 1024;
+#[doc = " PCM state"]
 pub type _snd_pcm_state = u32;
+#[doc = " PCM state"]
 pub use self::_snd_pcm_state as snd_pcm_state_t;
+#[doc = " Automatic start on data read/write"]
 pub const SND_PCM_START_DATA: _snd_pcm_start = 0;
+#[doc = " Explicit start"]
 pub const SND_PCM_START_EXPLICIT: _snd_pcm_start = 1;
+#[doc = " Explicit start"]
 pub const SND_PCM_START_LAST: _snd_pcm_start = 1;
+#[doc = " PCM start mode"]
 pub type _snd_pcm_start = u32;
+#[doc = " PCM start mode"]
 pub use self::_snd_pcm_start as snd_pcm_start_t;
+#[doc = " Xrun detection disabled"]
 pub const SND_PCM_XRUN_NONE: _snd_pcm_xrun = 0;
+#[doc = " Stop on xrun detection"]
 pub const SND_PCM_XRUN_STOP: _snd_pcm_xrun = 1;
+#[doc = " Stop on xrun detection"]
 pub const SND_PCM_XRUN_LAST: _snd_pcm_xrun = 1;
+#[doc = " PCM xrun mode"]
 pub type _snd_pcm_xrun = u32;
+#[doc = " PCM xrun mode"]
 pub use self::_snd_pcm_xrun as snd_pcm_xrun_t;
+#[doc = " No timestamp"]
 pub const SND_PCM_TSTAMP_NONE: _snd_pcm_tstamp = 0;
+#[doc = " Update timestamp at every hardware position update"]
 pub const SND_PCM_TSTAMP_ENABLE: _snd_pcm_tstamp = 1;
+#[doc = " Equivalent with #SND_PCM_TSTAMP_ENABLE,"]
+#[doc = " just for compatibility with older versions"]
 pub const SND_PCM_TSTAMP_MMAP: _snd_pcm_tstamp = 1;
+#[doc = " Equivalent with #SND_PCM_TSTAMP_ENABLE,"]
+#[doc = " just for compatibility with older versions"]
 pub const SND_PCM_TSTAMP_LAST: _snd_pcm_tstamp = 1;
+#[doc = " PCM timestamp mode"]
 pub type _snd_pcm_tstamp = u32;
+#[doc = " PCM timestamp mode"]
 pub use self::_snd_pcm_tstamp as snd_pcm_tstamp_t;
+#[doc = "< gettimeofday equivalent"]
 pub const SND_PCM_TSTAMP_TYPE_GETTIMEOFDAY: _snd_pcm_tstamp_type = 0;
+#[doc = "< posix_clock_monotonic equivalent"]
 pub const SND_PCM_TSTAMP_TYPE_MONOTONIC: _snd_pcm_tstamp_type = 1;
+#[doc = "< monotonic_raw (no NTP)"]
 pub const SND_PCM_TSTAMP_TYPE_MONOTONIC_RAW: _snd_pcm_tstamp_type = 2;
 pub const SND_PCM_TSTAMP_TYPE_LAST: _snd_pcm_tstamp_type = 2;
 pub type _snd_pcm_tstamp_type = u32;
 pub use self::_snd_pcm_tstamp_type as snd_pcm_tstamp_type_t;
+#[doc = " first definition for backwards compatibility only,"]
+#[doc = " maps to wallclock/link time for HDAudio playback and DEFAULT/DMA time for everything else"]
+pub const SND_PCM_AUDIO_TSTAMP_TYPE_COMPAT: _snd_pcm_audio_tstamp_type = 0;
+#[doc = "< DMA time, reported as per hw_ptr"]
+pub const SND_PCM_AUDIO_TSTAMP_TYPE_DEFAULT: _snd_pcm_audio_tstamp_type = 1;
+#[doc = "< link time reported by sample or wallclock counter, reset on startup"]
+pub const SND_PCM_AUDIO_TSTAMP_TYPE_LINK: _snd_pcm_audio_tstamp_type = 2;
+#[doc = "< link time reported by sample or wallclock counter, not reset on startup"]
+pub const SND_PCM_AUDIO_TSTAMP_TYPE_LINK_ABSOLUTE: _snd_pcm_audio_tstamp_type = 3;
+#[doc = "< link time estimated indirectly"]
+pub const SND_PCM_AUDIO_TSTAMP_TYPE_LINK_ESTIMATED: _snd_pcm_audio_tstamp_type = 4;
+#[doc = "< link time synchronized with system time"]
+pub const SND_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED: _snd_pcm_audio_tstamp_type = 5;
+pub const SND_PCM_AUDIO_TSTAMP_TYPE_LAST: _snd_pcm_audio_tstamp_type = 5;
+pub type _snd_pcm_audio_tstamp_type = u32;
+pub use self::_snd_pcm_audio_tstamp_type as snd_pcm_audio_tstamp_type_t;
 #[repr(C)]
 #[repr(align(4))]
 #[derive(Debug, Copy, Clone)]
@@ -1004,70 +1245,119 @@ impl _snd_pcm_audio_tstamp_report {
     }
 }
 pub type snd_pcm_audio_tstamp_report_t = _snd_pcm_audio_tstamp_report;
+#[doc = " Unsigned frames quantity"]
 pub type snd_pcm_uframes_t = ::std::os::raw::c_ulong;
+#[doc = " Signed frames quantity"]
 pub type snd_pcm_sframes_t = ::std::os::raw::c_long;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm {
     _unused: [u8; 0],
 }
+#[doc = " PCM handle"]
 pub type snd_pcm_t = _snd_pcm;
+#[doc = " Kernel level PCM"]
 pub const SND_PCM_TYPE_HW: _snd_pcm_type = 0;
+#[doc = " Hooked PCM"]
 pub const SND_PCM_TYPE_HOOKS: _snd_pcm_type = 1;
+#[doc = " One or more linked PCM with exclusive access to selected"]
+#[doc = "channels"]
 pub const SND_PCM_TYPE_MULTI: _snd_pcm_type = 2;
+#[doc = " File writing plugin"]
 pub const SND_PCM_TYPE_FILE: _snd_pcm_type = 3;
+#[doc = " Null endpoint PCM"]
 pub const SND_PCM_TYPE_NULL: _snd_pcm_type = 4;
+#[doc = " Shared memory client PCM"]
 pub const SND_PCM_TYPE_SHM: _snd_pcm_type = 5;
+#[doc = " INET client PCM (not yet implemented)"]
 pub const SND_PCM_TYPE_INET: _snd_pcm_type = 6;
+#[doc = " Copying plugin"]
 pub const SND_PCM_TYPE_COPY: _snd_pcm_type = 7;
+#[doc = " Linear format conversion PCM"]
 pub const SND_PCM_TYPE_LINEAR: _snd_pcm_type = 8;
+#[doc = " A-Law format conversion PCM"]
 pub const SND_PCM_TYPE_ALAW: _snd_pcm_type = 9;
+#[doc = " Mu-Law format conversion PCM"]
 pub const SND_PCM_TYPE_MULAW: _snd_pcm_type = 10;
+#[doc = " IMA-ADPCM format conversion PCM"]
 pub const SND_PCM_TYPE_ADPCM: _snd_pcm_type = 11;
+#[doc = " Rate conversion PCM"]
 pub const SND_PCM_TYPE_RATE: _snd_pcm_type = 12;
+#[doc = " Attenuated static route PCM"]
 pub const SND_PCM_TYPE_ROUTE: _snd_pcm_type = 13;
+#[doc = " Format adjusted PCM"]
 pub const SND_PCM_TYPE_PLUG: _snd_pcm_type = 14;
+#[doc = " Sharing PCM"]
 pub const SND_PCM_TYPE_SHARE: _snd_pcm_type = 15;
+#[doc = " Meter plugin"]
 pub const SND_PCM_TYPE_METER: _snd_pcm_type = 16;
+#[doc = " Mixing PCM"]
 pub const SND_PCM_TYPE_MIX: _snd_pcm_type = 17;
+#[doc = " Attenuated dynamic route PCM (not yet implemented)"]
 pub const SND_PCM_TYPE_DROUTE: _snd_pcm_type = 18;
+#[doc = " Loopback server plugin (not yet implemented)"]
 pub const SND_PCM_TYPE_LBSERVER: _snd_pcm_type = 19;
+#[doc = " Linear Integer <-> Linear Float format conversion PCM"]
 pub const SND_PCM_TYPE_LINEAR_FLOAT: _snd_pcm_type = 20;
+#[doc = " LADSPA integration plugin"]
 pub const SND_PCM_TYPE_LADSPA: _snd_pcm_type = 21;
+#[doc = " Direct Mixing plugin"]
 pub const SND_PCM_TYPE_DMIX: _snd_pcm_type = 22;
+#[doc = " Jack Audio Connection Kit plugin"]
 pub const SND_PCM_TYPE_JACK: _snd_pcm_type = 23;
+#[doc = " Direct Snooping plugin"]
 pub const SND_PCM_TYPE_DSNOOP: _snd_pcm_type = 24;
+#[doc = " Direct Sharing plugin"]
 pub const SND_PCM_TYPE_DSHARE: _snd_pcm_type = 25;
+#[doc = " IEC958 subframe plugin"]
 pub const SND_PCM_TYPE_IEC958: _snd_pcm_type = 26;
+#[doc = " Soft volume plugin"]
 pub const SND_PCM_TYPE_SOFTVOL: _snd_pcm_type = 27;
+#[doc = " External I/O plugin"]
 pub const SND_PCM_TYPE_IOPLUG: _snd_pcm_type = 28;
+#[doc = " External filter plugin"]
 pub const SND_PCM_TYPE_EXTPLUG: _snd_pcm_type = 29;
+#[doc = " Mmap-emulation plugin"]
 pub const SND_PCM_TYPE_MMAP_EMUL: _snd_pcm_type = 30;
+#[doc = " Mmap-emulation plugin"]
 pub const SND_PCM_TYPE_LAST: _snd_pcm_type = 30;
+#[doc = " PCM type"]
 pub type _snd_pcm_type = u32;
+#[doc = " PCM type"]
 pub use self::_snd_pcm_type as snd_pcm_type_t;
+#[doc = " PCM area specification"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_channel_area {
+    #[doc = " base address of channel samples"]
     pub addr: *mut ::std::os::raw::c_void,
+    #[doc = " offset to first sample in bits"]
     pub first: ::std::os::raw::c_uint,
+    #[doc = " samples distance in bits"]
     pub step: ::std::os::raw::c_uint,
 }
+#[doc = " PCM area specification"]
 pub type snd_pcm_channel_area_t = _snd_pcm_channel_area;
+#[doc = " PCM synchronization ID"]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union _snd_pcm_sync_id {
+    #[doc = " 8-bit ID"]
     pub id: [::std::os::raw::c_uchar; 16usize],
+    #[doc = " 16-bit ID"]
     pub id16: [::std::os::raw::c_ushort; 8usize],
+    #[doc = " 32-bit ID"]
     pub id32: [::std::os::raw::c_uint; 4usize],
     _bindgen_union_align: [u32; 4usize],
 }
+#[doc = " PCM synchronization ID"]
 pub type snd_pcm_sync_id_t = _snd_pcm_sync_id;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_scope {
     _unused: [u8; 0],
 }
+#[doc = " #SND_PCM_TYPE_METER scope handle"]
 pub type snd_pcm_scope_t = _snd_pcm_scope;
 extern "C" {
     pub fn snd_pcm_open(
@@ -1287,64 +1577,116 @@ extern "C" {
 extern "C" {
     pub fn snd_pcm_unlink(pcm: *mut snd_pcm_t) -> ::std::os::raw::c_int;
 }
+#[doc = "< unspecified channel position"]
 pub const SND_CHMAP_TYPE_NONE: snd_pcm_chmap_type = 0;
+#[doc = "< fixed channel position"]
 pub const SND_CHMAP_TYPE_FIXED: snd_pcm_chmap_type = 1;
+#[doc = "< freely swappable channel position"]
 pub const SND_CHMAP_TYPE_VAR: snd_pcm_chmap_type = 2;
+#[doc = "< pair-wise swappable channel position"]
 pub const SND_CHMAP_TYPE_PAIRED: snd_pcm_chmap_type = 3;
+#[doc = "< last entry"]
 pub const SND_CHMAP_TYPE_LAST: snd_pcm_chmap_type = 3;
+#[doc = " channel map list type"]
 pub type snd_pcm_chmap_type = u32;
+#[doc = "< unspecified"]
 pub const SND_CHMAP_UNKNOWN: snd_pcm_chmap_position = 0;
+#[doc = "< N/A, silent"]
 pub const SND_CHMAP_NA: snd_pcm_chmap_position = 1;
+#[doc = "< mono stream"]
 pub const SND_CHMAP_MONO: snd_pcm_chmap_position = 2;
+#[doc = "< front left"]
 pub const SND_CHMAP_FL: snd_pcm_chmap_position = 3;
+#[doc = "< front right"]
 pub const SND_CHMAP_FR: snd_pcm_chmap_position = 4;
+#[doc = "< rear left"]
 pub const SND_CHMAP_RL: snd_pcm_chmap_position = 5;
+#[doc = "< rear right"]
 pub const SND_CHMAP_RR: snd_pcm_chmap_position = 6;
+#[doc = "< front center"]
 pub const SND_CHMAP_FC: snd_pcm_chmap_position = 7;
+#[doc = "< LFE"]
 pub const SND_CHMAP_LFE: snd_pcm_chmap_position = 8;
+#[doc = "< side left"]
 pub const SND_CHMAP_SL: snd_pcm_chmap_position = 9;
+#[doc = "< side right"]
 pub const SND_CHMAP_SR: snd_pcm_chmap_position = 10;
+#[doc = "< rear center"]
 pub const SND_CHMAP_RC: snd_pcm_chmap_position = 11;
+#[doc = "< front left center"]
 pub const SND_CHMAP_FLC: snd_pcm_chmap_position = 12;
+#[doc = "< front right center"]
 pub const SND_CHMAP_FRC: snd_pcm_chmap_position = 13;
+#[doc = "< rear left center"]
 pub const SND_CHMAP_RLC: snd_pcm_chmap_position = 14;
+#[doc = "< rear right center"]
 pub const SND_CHMAP_RRC: snd_pcm_chmap_position = 15;
+#[doc = "< front left wide"]
 pub const SND_CHMAP_FLW: snd_pcm_chmap_position = 16;
+#[doc = "< front right wide"]
 pub const SND_CHMAP_FRW: snd_pcm_chmap_position = 17;
+#[doc = "< front left high"]
 pub const SND_CHMAP_FLH: snd_pcm_chmap_position = 18;
+#[doc = "< front center high"]
 pub const SND_CHMAP_FCH: snd_pcm_chmap_position = 19;
+#[doc = "< front right high"]
 pub const SND_CHMAP_FRH: snd_pcm_chmap_position = 20;
+#[doc = "< top center"]
 pub const SND_CHMAP_TC: snd_pcm_chmap_position = 21;
+#[doc = "< top front left"]
 pub const SND_CHMAP_TFL: snd_pcm_chmap_position = 22;
+#[doc = "< top front right"]
 pub const SND_CHMAP_TFR: snd_pcm_chmap_position = 23;
+#[doc = "< top front center"]
 pub const SND_CHMAP_TFC: snd_pcm_chmap_position = 24;
+#[doc = "< top rear left"]
 pub const SND_CHMAP_TRL: snd_pcm_chmap_position = 25;
+#[doc = "< top rear right"]
 pub const SND_CHMAP_TRR: snd_pcm_chmap_position = 26;
+#[doc = "< top rear center"]
 pub const SND_CHMAP_TRC: snd_pcm_chmap_position = 27;
+#[doc = "< top front left center"]
 pub const SND_CHMAP_TFLC: snd_pcm_chmap_position = 28;
+#[doc = "< top front right center"]
 pub const SND_CHMAP_TFRC: snd_pcm_chmap_position = 29;
+#[doc = "< top side left"]
 pub const SND_CHMAP_TSL: snd_pcm_chmap_position = 30;
+#[doc = "< top side right"]
 pub const SND_CHMAP_TSR: snd_pcm_chmap_position = 31;
+#[doc = "< left LFE"]
 pub const SND_CHMAP_LLFE: snd_pcm_chmap_position = 32;
+#[doc = "< right LFE"]
 pub const SND_CHMAP_RLFE: snd_pcm_chmap_position = 33;
+#[doc = "< bottom center"]
 pub const SND_CHMAP_BC: snd_pcm_chmap_position = 34;
+#[doc = "< bottom left center"]
 pub const SND_CHMAP_BLC: snd_pcm_chmap_position = 35;
+#[doc = "< bottom right center"]
 pub const SND_CHMAP_BRC: snd_pcm_chmap_position = 36;
 pub const SND_CHMAP_LAST: snd_pcm_chmap_position = 36;
+#[doc = " channel positions"]
 pub type snd_pcm_chmap_position = u32;
+#[doc = " the channel map header"]
 #[repr(C)]
 #[derive(Debug)]
 pub struct snd_pcm_chmap {
+    #[doc = "< number of channels"]
     pub channels: ::std::os::raw::c_uint,
+    #[doc = "< channel position array"]
     pub pos: __IncompleteArrayField<::std::os::raw::c_uint>,
 }
+#[doc = " the channel map header"]
 pub type snd_pcm_chmap_t = snd_pcm_chmap;
+#[doc = " the header of array items returned from snd_pcm_query_chmaps()"]
 #[repr(C)]
 #[derive(Debug)]
 pub struct snd_pcm_chmap_query {
+    #[doc = "< channel map type"]
     pub type_: snd_pcm_chmap_type,
+    #[doc = "< available channel map"]
     pub map: snd_pcm_chmap_t,
 }
+#[doc = " the header of array items returned from snd_pcm_query_chmaps()"]
 pub type snd_pcm_chmap_query_t = snd_pcm_chmap_query;
 extern "C" {
     pub fn snd_pcm_query_chmaps(pcm: *mut snd_pcm_t) -> *mut *mut snd_pcm_chmap_query_t;
@@ -1417,6 +1759,10 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_Info Stream Information"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_info_sizeof() -> usize;
 }
 extern "C" {
@@ -1476,6 +1822,10 @@ extern "C" {
     pub fn snd_pcm_info_set_stream(obj: *mut snd_pcm_info_t, val: snd_pcm_stream_t);
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_HW_Params Hardware Parameters"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_hw_params_any(
         pcm: *mut snd_pcm_t,
         params: *mut snd_pcm_hw_params_t,
@@ -2363,6 +2713,10 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_SW_Params Software Parameters"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_sw_params_sizeof() -> usize;
 }
 extern "C" {
@@ -2485,6 +2839,10 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_Access Access Mask Functions"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_access_mask_sizeof() -> usize;
 }
 extern "C" {
@@ -2523,6 +2881,10 @@ extern "C" {
     pub fn snd_pcm_access_mask_reset(mask: *mut snd_pcm_access_mask_t, val: snd_pcm_access_t);
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_Format Format Mask Functions"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_format_mask_sizeof() -> usize;
 }
 extern "C" {
@@ -2561,6 +2923,10 @@ extern "C" {
     pub fn snd_pcm_format_mask_reset(mask: *mut snd_pcm_format_mask_t, val: snd_pcm_format_t);
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_SubFormat Subformat Mask Functions"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_subformat_mask_sizeof() -> usize;
 }
 extern "C" {
@@ -2607,6 +2973,10 @@ extern "C" {
     );
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_Status Status Functions"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_status_sizeof() -> usize;
 }
 extern "C" {
@@ -2676,6 +3046,10 @@ extern "C" {
     pub fn snd_pcm_status_get_overrange(obj: *const snd_pcm_status_t) -> snd_pcm_uframes_t;
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_Description Description Functions"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_type_name(type_: snd_pcm_type_t) -> *const ::std::os::raw::c_char;
 }
 extern "C" {
@@ -2708,6 +3082,10 @@ extern "C" {
     pub fn snd_pcm_state_name(state: snd_pcm_state_t) -> *const ::std::os::raw::c_char;
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_Dump Debug Functions"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_dump(pcm: *mut snd_pcm_t, out: *mut snd_output_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -2745,6 +3123,10 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_Direct Direct Access (MMAP) Functions"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_mmap_begin(
         pcm: *mut snd_pcm_t,
         areas: *mut *const snd_pcm_channel_area_t,
@@ -2788,6 +3170,10 @@ extern "C" {
     ) -> snd_pcm_sframes_t;
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_Helpers Helper Functions"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_format_signed(format: snd_pcm_format_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -2911,14 +3297,18 @@ pub const SND_PCM_HOOK_TYPE_HW_PARAMS: _snd_pcm_hook_type = 0;
 pub const SND_PCM_HOOK_TYPE_HW_FREE: _snd_pcm_hook_type = 1;
 pub const SND_PCM_HOOK_TYPE_CLOSE: _snd_pcm_hook_type = 2;
 pub const SND_PCM_HOOK_TYPE_LAST: _snd_pcm_hook_type = 2;
+#[doc = " type of pcm hook"]
 pub type _snd_pcm_hook_type = u32;
+#[doc = " type of pcm hook"]
 pub use self::_snd_pcm_hook_type as snd_pcm_hook_type_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_hook {
     _unused: [u8; 0],
 }
+#[doc = " PCM hook container"]
 pub type snd_pcm_hook_t = _snd_pcm_hook;
+#[doc = " PCM hook callback function"]
 pub type snd_pcm_hook_func_t =
     ::std::option::Option<unsafe extern "C" fn(hook: *mut snd_pcm_hook_t) -> ::std::os::raw::c_int>;
 extern "C" {
@@ -2945,19 +3335,35 @@ extern "C" {
 extern "C" {
     pub fn snd_pcm_hook_remove(hook: *mut snd_pcm_hook_t) -> ::std::os::raw::c_int;
 }
+#[doc = " #SND_PCM_TYPE_METER scope functions"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_pcm_scope_ops {
+    #[doc = " \\brief Enable and prepare it using current params"]
+    #[doc = " \\param scope scope handle"]
     pub enable: ::std::option::Option<
         unsafe extern "C" fn(scope: *mut snd_pcm_scope_t) -> ::std::os::raw::c_int,
     >,
+    #[doc = " \\brief Disable"]
+    #[doc = " \\param scope scope handle"]
     pub disable: ::std::option::Option<unsafe extern "C" fn(scope: *mut snd_pcm_scope_t)>,
+    #[doc = " \\brief PCM has been started"]
+    #[doc = " \\param scope scope handle"]
     pub start: ::std::option::Option<unsafe extern "C" fn(scope: *mut snd_pcm_scope_t)>,
+    #[doc = " \\brief PCM has been stopped"]
+    #[doc = " \\param scope scope handle"]
     pub stop: ::std::option::Option<unsafe extern "C" fn(scope: *mut snd_pcm_scope_t)>,
+    #[doc = " \\brief New frames are present"]
+    #[doc = " \\param scope scope handle"]
     pub update: ::std::option::Option<unsafe extern "C" fn(scope: *mut snd_pcm_scope_t)>,
+    #[doc = " \\brief Reset status"]
+    #[doc = " \\param scope scope handle"]
     pub reset: ::std::option::Option<unsafe extern "C" fn(scope: *mut snd_pcm_scope_t)>,
+    #[doc = " \\brief PCM is closing"]
+    #[doc = " \\param scope scope handle"]
     pub close: ::std::option::Option<unsafe extern "C" fn(scope: *mut snd_pcm_scope_t)>,
 }
+#[doc = " #SND_PCM_TYPE_METER scope functions"]
 pub type snd_pcm_scope_ops_t = _snd_pcm_scope_ops;
 extern "C" {
     pub fn snd_pcm_meter_get_bufsize(pcm: *mut snd_pcm_t) -> snd_pcm_uframes_t;
@@ -3022,18 +3428,34 @@ extern "C" {
         channel: ::std::os::raw::c_uint,
     ) -> *mut i16;
 }
+#[doc = " standard latency - for standard playback or capture"]
+#[doc = "(estimated latency in one direction 350ms)"]
 pub const SND_SPCM_LATENCY_STANDARD: _snd_spcm_latency = 0;
+#[doc = " medium latency - software phones etc."]
+#[doc = "(estimated latency in one direction maximally 25ms"]
 pub const SND_SPCM_LATENCY_MEDIUM: _snd_spcm_latency = 1;
+#[doc = " realtime latency - realtime applications (effect processors etc.)"]
+#[doc = "(estimated latency in one direction 5ms and better)"]
 pub const SND_SPCM_LATENCY_REALTIME: _snd_spcm_latency = 2;
+#[doc = " Simple PCM latency type"]
 pub type _snd_spcm_latency = u32;
+#[doc = " Simple PCM latency type"]
 pub use self::_snd_spcm_latency as snd_spcm_latency_t;
+#[doc = " driver / library will ignore all xruns, the stream runs forever"]
 pub const SND_SPCM_XRUN_IGNORE: _snd_spcm_xrun_type = 0;
+#[doc = " driver / library stops the stream when an xrun occurs"]
 pub const SND_SPCM_XRUN_STOP: _snd_spcm_xrun_type = 1;
+#[doc = " Simple PCM xrun type"]
 pub type _snd_spcm_xrun_type = u32;
+#[doc = " Simple PCM xrun type"]
 pub use self::_snd_spcm_xrun_type as snd_spcm_xrun_type_t;
+#[doc = " liberal duplex - the buffer and period sizes might not match"]
 pub const SND_SPCM_DUPLEX_LIBERAL: _snd_spcm_duplex_type = 0;
+#[doc = " pedantic duplex - the buffer and period sizes MUST match"]
 pub const SND_SPCM_DUPLEX_PEDANTIC: _snd_spcm_duplex_type = 1;
+#[doc = " Simple PCM duplex type"]
 pub type _snd_spcm_duplex_type = u32;
+#[doc = " Simple PCM duplex type"]
 pub use self::_snd_spcm_duplex_type as snd_spcm_duplex_type_t;
 extern "C" {
     pub fn snd_spcm_init(
@@ -3070,6 +3492,10 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    #[doc = " \\defgroup PCM_Deprecated Deprecated Functions"]
+    #[doc = " \\ingroup PCM"]
+    #[doc = " See the \\ref pcm page for more details."]
+    #[doc = " \\{"]
     pub fn snd_pcm_start_mode_name(mode: snd_pcm_start_t) -> *const ::std::os::raw::c_char;
 }
 extern "C" {
@@ -3213,35 +3639,50 @@ extern "C" {
 pub struct _snd_rawmidi_info {
     _unused: [u8; 0],
 }
+#[doc = " RawMidi information container"]
 pub type snd_rawmidi_info_t = _snd_rawmidi_info;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_rawmidi_params {
     _unused: [u8; 0],
 }
+#[doc = " RawMidi settings container"]
 pub type snd_rawmidi_params_t = _snd_rawmidi_params;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_rawmidi_status {
     _unused: [u8; 0],
 }
+#[doc = " RawMidi status container"]
 pub type snd_rawmidi_status_t = _snd_rawmidi_status;
+#[doc = " Output stream"]
 pub const SND_RAWMIDI_STREAM_OUTPUT: _snd_rawmidi_stream = 0;
+#[doc = " Input stream"]
 pub const SND_RAWMIDI_STREAM_INPUT: _snd_rawmidi_stream = 1;
+#[doc = " Input stream"]
 pub const SND_RAWMIDI_STREAM_LAST: _snd_rawmidi_stream = 1;
+#[doc = " RawMidi stream (direction)"]
 pub type _snd_rawmidi_stream = u32;
+#[doc = " RawMidi stream (direction)"]
 pub use self::_snd_rawmidi_stream as snd_rawmidi_stream_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_rawmidi {
     _unused: [u8; 0],
 }
+#[doc = " RawMidi handle"]
 pub type snd_rawmidi_t = _snd_rawmidi;
+#[doc = " Kernel level RawMidi"]
 pub const SND_RAWMIDI_TYPE_HW: _snd_rawmidi_type = 0;
+#[doc = " Shared memory client RawMidi (not yet implemented)"]
 pub const SND_RAWMIDI_TYPE_SHM: _snd_rawmidi_type = 1;
+#[doc = " INET client RawMidi (not yet implemented)"]
 pub const SND_RAWMIDI_TYPE_INET: _snd_rawmidi_type = 2;
+#[doc = " Virtual (sequencer) RawMidi"]
 pub const SND_RAWMIDI_TYPE_VIRTUAL: _snd_rawmidi_type = 3;
+#[doc = " RawMidi type"]
 pub type _snd_rawmidi_type = u32;
+#[doc = " RawMidi type"]
 pub use self::_snd_rawmidi_type as snd_rawmidi_type_t;
 extern "C" {
     pub fn snd_rawmidi_open(
@@ -3483,57 +3924,79 @@ extern "C" {
 pub struct _snd_timer_id {
     _unused: [u8; 0],
 }
+#[doc = " timer identification structure"]
 pub type snd_timer_id_t = _snd_timer_id;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_timer_ginfo {
     _unused: [u8; 0],
 }
+#[doc = " timer global info structure"]
 pub type snd_timer_ginfo_t = _snd_timer_ginfo;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_timer_gparams {
     _unused: [u8; 0],
 }
+#[doc = " timer global params structure"]
 pub type snd_timer_gparams_t = _snd_timer_gparams;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_timer_gstatus {
     _unused: [u8; 0],
 }
+#[doc = " timer global status structure"]
 pub type snd_timer_gstatus_t = _snd_timer_gstatus;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_timer_info {
     _unused: [u8; 0],
 }
+#[doc = " timer info structure"]
 pub type snd_timer_info_t = _snd_timer_info;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_timer_params {
     _unused: [u8; 0],
 }
+#[doc = " timer params structure"]
 pub type snd_timer_params_t = _snd_timer_params;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_timer_status {
     _unused: [u8; 0],
 }
+#[doc = " timer status structure"]
 pub type snd_timer_status_t = _snd_timer_status;
+#[doc = "< invalid"]
 pub const SND_TIMER_CLASS_NONE: _snd_timer_class = -1;
+#[doc = "< slave timer"]
 pub const SND_TIMER_CLASS_SLAVE: _snd_timer_class = 0;
+#[doc = "< global timer"]
 pub const SND_TIMER_CLASS_GLOBAL: _snd_timer_class = 1;
+#[doc = "< card timer"]
 pub const SND_TIMER_CLASS_CARD: _snd_timer_class = 2;
+#[doc = "< PCM timer"]
 pub const SND_TIMER_CLASS_PCM: _snd_timer_class = 3;
+#[doc = "< last timer"]
 pub const SND_TIMER_CLASS_LAST: _snd_timer_class = 3;
+#[doc = " timer master class"]
 pub type _snd_timer_class = i32;
+#[doc = " timer master class"]
 pub use self::_snd_timer_class as snd_timer_class_t;
+#[doc = "< none"]
 pub const SND_TIMER_SCLASS_NONE: _snd_timer_slave_class = 0;
+#[doc = "< for internal use"]
 pub const SND_TIMER_SCLASS_APPLICATION: _snd_timer_slave_class = 1;
+#[doc = "< sequencer timer"]
 pub const SND_TIMER_SCLASS_SEQUENCER: _snd_timer_slave_class = 2;
+#[doc = "< OSS sequencer timer"]
 pub const SND_TIMER_SCLASS_OSS_SEQUENCER: _snd_timer_slave_class = 3;
+#[doc = "< last slave timer"]
 pub const SND_TIMER_SCLASS_LAST: _snd_timer_slave_class = 3;
+#[doc = " timer slave class"]
 pub type _snd_timer_slave_class = u32;
+#[doc = " timer slave class"]
 pub use self::_snd_timer_slave_class as snd_timer_slave_class_t;
 pub const SND_TIMER_EVENT_RESOLUTION: _snd_timer_event = 0;
 pub const SND_TIMER_EVENT_TICK: _snd_timer_event = 1;
@@ -3550,38 +4013,56 @@ pub const SND_TIMER_EVENT_MCONTINUE: _snd_timer_event = 14;
 pub const SND_TIMER_EVENT_MPAUSE: _snd_timer_event = 15;
 pub const SND_TIMER_EVENT_MSUSPEND: _snd_timer_event = 17;
 pub const SND_TIMER_EVENT_MRESUME: _snd_timer_event = 18;
+#[doc = " timer read event identification"]
 pub type _snd_timer_event = u32;
+#[doc = " timer read event identification"]
 pub use self::_snd_timer_event as snd_timer_event_t;
+#[doc = " timer read structure"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_timer_read {
+    #[doc = "< tick resolution in nanoseconds"]
     pub resolution: ::std::os::raw::c_uint,
+    #[doc = "< count of happened ticks"]
     pub ticks: ::std::os::raw::c_uint,
 }
+#[doc = " timer read structure"]
 pub type snd_timer_read_t = _snd_timer_read;
+#[doc = " timer tstamp + event read structure"]
 #[repr(C)]
 pub struct _snd_timer_tread {
+    #[doc = "< Timer event"]
     pub event: snd_timer_event_t,
+    #[doc = "< Time stamp of each event"]
     pub tstamp: snd_htimestamp_t,
+    #[doc = "< Event value"]
     pub val: ::std::os::raw::c_uint,
 }
+#[doc = " timer tstamp + event read structure"]
 pub type snd_timer_tread_t = _snd_timer_tread;
+#[doc = " Kernel level HwDep"]
 pub const SND_TIMER_TYPE_HW: _snd_timer_type = 0;
+#[doc = " Shared memory client timer (not yet implemented)"]
 pub const SND_TIMER_TYPE_SHM: _snd_timer_type = 1;
+#[doc = " INET client timer (not yet implemented)"]
 pub const SND_TIMER_TYPE_INET: _snd_timer_type = 2;
+#[doc = " timer handle type"]
 pub type _snd_timer_type = u32;
+#[doc = " timer handle type"]
 pub use self::_snd_timer_type as snd_timer_type_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_timer_query {
     _unused: [u8; 0],
 }
+#[doc = " timer query handle"]
 pub type snd_timer_query_t = _snd_timer_query;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_timer {
     _unused: [u8; 0],
 }
+#[doc = " timer handle"]
 pub type snd_timer_t = _snd_timer;
 extern "C" {
     pub fn snd_timer_query_open(
@@ -3934,59 +4415,93 @@ extern "C" {
 pub struct _snd_hwdep_info {
     _unused: [u8; 0],
 }
+#[doc = " HwDep information container"]
 pub type snd_hwdep_info_t = _snd_hwdep_info;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_hwdep_dsp_status {
     _unused: [u8; 0],
 }
+#[doc = " HwDep DSP status container"]
 pub type snd_hwdep_dsp_status_t = _snd_hwdep_dsp_status;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_hwdep_dsp_image {
     _unused: [u8; 0],
 }
+#[doc = " HwDep DSP image container"]
 pub type snd_hwdep_dsp_image_t = _snd_hwdep_dsp_image;
+#[doc = "< OPL2 raw driver"]
 pub const SND_HWDEP_IFACE_OPL2: _snd_hwdep_iface = 0;
+#[doc = "< OPL3 raw driver"]
 pub const SND_HWDEP_IFACE_OPL3: _snd_hwdep_iface = 1;
+#[doc = "< OPL4 raw driver"]
 pub const SND_HWDEP_IFACE_OPL4: _snd_hwdep_iface = 2;
+#[doc = "< SB16CSP driver"]
 pub const SND_HWDEP_IFACE_SB16CSP: _snd_hwdep_iface = 3;
+#[doc = "< EMU10K1 driver"]
 pub const SND_HWDEP_IFACE_EMU10K1: _snd_hwdep_iface = 4;
+#[doc = "< YSS225 driver"]
 pub const SND_HWDEP_IFACE_YSS225: _snd_hwdep_iface = 5;
+#[doc = "< ICS2115 driver"]
 pub const SND_HWDEP_IFACE_ICS2115: _snd_hwdep_iface = 6;
+#[doc = "< Ensoniq SoundScape ISA card (MC68EC000)"]
 pub const SND_HWDEP_IFACE_SSCAPE: _snd_hwdep_iface = 7;
+#[doc = "< Digigram VX cards"]
 pub const SND_HWDEP_IFACE_VX: _snd_hwdep_iface = 8;
+#[doc = "< Digigram miXart cards"]
 pub const SND_HWDEP_IFACE_MIXART: _snd_hwdep_iface = 9;
+#[doc = "< Tascam US122, US224 & US428 usb"]
 pub const SND_HWDEP_IFACE_USX2Y: _snd_hwdep_iface = 10;
+#[doc = "< EmuX wavetable"]
 pub const SND_HWDEP_IFACE_EMUX_WAVETABLE: _snd_hwdep_iface = 11;
+#[doc = "< Bluetooth audio"]
 pub const SND_HWDEP_IFACE_BLUETOOTH: _snd_hwdep_iface = 12;
+#[doc = "< Tascam US122, US224 & US428 raw USB PCM"]
 pub const SND_HWDEP_IFACE_USX2Y_PCM: _snd_hwdep_iface = 13;
+#[doc = "< Digigram PCXHR"]
 pub const SND_HWDEP_IFACE_PCXHR: _snd_hwdep_iface = 14;
+#[doc = "< SB Extigy/Audigy2NX remote control"]
 pub const SND_HWDEP_IFACE_SB_RC: _snd_hwdep_iface = 15;
+#[doc = "< HD-audio"]
 pub const SND_HWDEP_IFACE_HDA: _snd_hwdep_iface = 16;
+#[doc = "< direct access to usb stream"]
 pub const SND_HWDEP_IFACE_USB_STREAM: _snd_hwdep_iface = 17;
+#[doc = "< TC DICE FireWire device"]
 pub const SND_HWDEP_IFACE_FW_DICE: _snd_hwdep_iface = 18;
+#[doc = "< Echo Audio Fireworks based device"]
 pub const SND_HWDEP_IFACE_FW_FIREWORKS: _snd_hwdep_iface = 19;
+#[doc = "< BridgeCo BeBoB based device"]
 pub const SND_HWDEP_IFACE_FW_BEBOB: _snd_hwdep_iface = 20;
+#[doc = "< Oxford OXFW970/971 based device"]
 pub const SND_HWDEP_IFACE_FW_OXFW: _snd_hwdep_iface = 21;
 pub const SND_HWDEP_IFACE_FW_DIGI00X: _snd_hwdep_iface = 22;
 pub const SND_HWDEP_IFACE_FW_TASCAM: _snd_hwdep_iface = 23;
 pub const SND_HWDEP_IFACE_LINE6: _snd_hwdep_iface = 24;
 pub const SND_HWDEP_IFACE_FW_MOTU: _snd_hwdep_iface = 25;
 pub const SND_HWDEP_IFACE_FW_FIREFACE: _snd_hwdep_iface = 26;
+#[doc = "< last known hwdep interface"]
 pub const SND_HWDEP_IFACE_LAST: _snd_hwdep_iface = 26;
+#[doc = " HwDep interface"]
 pub type _snd_hwdep_iface = u32;
+#[doc = " HwDep interface"]
 pub use self::_snd_hwdep_iface as snd_hwdep_iface_t;
+#[doc = " Kernel level HwDep"]
 pub const SND_HWDEP_TYPE_HW: _snd_hwdep_type = 0;
+#[doc = " Shared memory client HwDep (not yet implemented)"]
 pub const SND_HWDEP_TYPE_SHM: _snd_hwdep_type = 1;
+#[doc = " INET client HwDep (not yet implemented)"]
 pub const SND_HWDEP_TYPE_INET: _snd_hwdep_type = 2;
+#[doc = " HwDep handle type"]
 pub type _snd_hwdep_type = u32;
+#[doc = " HwDep handle type"]
 pub use self::_snd_hwdep_type as snd_hwdep_type_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_hwdep {
     _unused: [u8; 0],
 }
+#[doc = " HwDep handle"]
 pub type snd_hwdep_t = _snd_hwdep;
 extern "C" {
     pub fn snd_hwdep_open(
@@ -4189,92 +4704,248 @@ extern "C" {
 extern "C" {
     pub fn snd_hwdep_dsp_image_set_length(obj: *mut snd_hwdep_dsp_image_t, length: usize);
 }
+#[doc = " IEC958 structure"]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct snd_aes_iec958 {
+    #[doc = "< AES/IEC958 channel status bits"]
     pub status: [::std::os::raw::c_uchar; 24usize],
+    #[doc = "< AES/IEC958 subcode bits"]
     pub subcode: [::std::os::raw::c_uchar; 147usize],
+    #[doc = "< nothing"]
     pub pad: ::std::os::raw::c_uchar,
+    #[doc = "< AES/IEC958 subframe bits"]
     pub dig_subframe: [::std::os::raw::c_uchar; 4usize],
 }
+#[doc = " IEC958 structure"]
 pub type snd_aes_iec958_t = snd_aes_iec958;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_ctl_card_info {
     _unused: [u8; 0],
 }
+#[doc = " CTL card info container"]
 pub type snd_ctl_card_info_t = _snd_ctl_card_info;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_ctl_elem_id {
     _unused: [u8; 0],
 }
+#[doc = " CTL element identifier container"]
 pub type snd_ctl_elem_id_t = _snd_ctl_elem_id;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_ctl_elem_list {
     _unused: [u8; 0],
 }
+#[doc = " CTL element list container"]
+#[doc = ""]
+#[doc = " This is a list of CTL elements. The list contains management"]
+#[doc = " information (e.g. how many elements the sound card has) as well as"]
+#[doc = " the element identifiers. All functions which operate on the list"]
+#[doc = " are named snd_ctl_elem_list_*()."]
+#[doc = ""]
+#[doc = " \\par Memory management"]
+#[doc = ""]
+#[doc = " There are two memory areas to deal with: The list container itself"]
+#[doc = " and the memory for the element identifiers."]
+#[doc = ""]
+#[doc = " To manage the area for the list container, the following functions"]
+#[doc = " are used:"]
+#[doc = ""]
+#[doc = " - snd_ctl_elem_list_malloc() / snd_ctl_elem_list_free() to allocate"]
+#[doc = "   and free memory on the heap, or"]
+#[doc = " - snd_ctl_elem_list_alloca() to allocate the memory on the"]
+#[doc = "   stack. This memory is auto-released when the stack is unwound."]
+#[doc = ""]
+#[doc = " To manage the space for the element identifiers, the"]
+#[doc = " snd_ctl_elem_list_alloc_space() and snd_ctl_elem_list_free_space()"]
+#[doc = " are used. Allocating the right amount of space can be achieved by"]
+#[doc = " first obtaining the number of elements and then calling"]
+#[doc = " snd_ctl_elem_list_alloc_space():"]
+#[doc = ""]
+#[doc = " \\code"]
+#[doc = "   snd_ctl_elem_list_t* list;"]
+#[doc = "   int count;"]
+#[doc = ""]
+#[doc = "   // Initialise list"]
+#[doc = "   snd_ctl_elem_list_malloc(&list);"]
+#[doc = ""]
+#[doc = "   // Get number of elements"]
+#[doc = "   snd_ctl_elem_list(ctl, list);"]
+#[doc = "   count = snd_ctl_elem_list_get_count(list);"]
+#[doc = ""]
+#[doc = "   // Allocate space for identifiers"]
+#[doc = "   snd_ctl_elem_list_alloc_space(list, count);"]
+#[doc = ""]
+#[doc = "   // Get identifiers"]
+#[doc = "   snd_ctl_elem_list(ctl, list); // yes, this is same as above :)"]
+#[doc = ""]
+#[doc = "   // Do something useful with the list..."]
+#[doc = ""]
+#[doc = "   // Cleanup"]
+#[doc = "   snd_ctl_elem_list_free_space(list);"]
+#[doc = "   snd_ctl_elem_list_free(list);"]
+#[doc = " \\endcode"]
+#[doc = ""]
+#[doc = ""]
+#[doc = " \\par The Elements"]
+#[doc = ""]
+#[doc = " The elements in the list are accessed using an index. This index is"]
+#[doc = " the location in the list; Don't confuse it with the 'index' of the"]
+#[doc = " element identifier. For example:"]
+#[doc = ""]
+#[doc = " \\code"]
+#[doc = "     snd_ctl_elem_list_t list;"]
+#[doc = "     unsigned int element_index;"]
+#[doc = ""]
+#[doc = "     // Allocate space, fill list ..."]
+#[doc = ""]
+#[doc = "     element_index = snd_ctl_elem_list_get_index(&list, 2);"]
+#[doc = " \\endcode"]
+#[doc = ""]
+#[doc = " This will access the 3rd element in the list (index=2) and get the"]
+#[doc = " elements index from the driver (which might be 13, for example)."]
 pub type snd_ctl_elem_list_t = _snd_ctl_elem_list;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_ctl_elem_info {
     _unused: [u8; 0],
 }
+#[doc = " CTL element info container"]
 pub type snd_ctl_elem_info_t = _snd_ctl_elem_info;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_ctl_elem_value {
     _unused: [u8; 0],
 }
+#[doc = " CTL element value container"]
+#[doc = ""]
+#[doc = " Contains the value(s) (i.e. members) of a single element. All"]
+#[doc = " values of a given element are of the same type."]
+#[doc = ""]
+#[doc = " \\par Memory management"]
+#[doc = ""]
+#[doc = " To access a value, a snd_ctl_elem_value_t must be allocated using"]
+#[doc = " snd_ctl_elem_value_alloca() or snd_ctl_elem_value_malloc(). When"]
+#[doc = " using the latter, it must be freed again using"]
+#[doc = " snd_ctl_elem_value_free()."]
+#[doc = ""]
+#[doc = " \\par Identifier"]
+#[doc = ""]
+#[doc = " Then, the ID must be filled. It is sufficient to fill only the"]
+#[doc = " numid, if known. Otherwise, interface type, device, subdevice,"]
+#[doc = " name, index must all be given.  The following functions can be used"]
+#[doc = " to fill the ID:"]
+#[doc = ""]
+#[doc = " - snd_ctl_elem_value_set_id(): Set the ID. Requires an"]
+#[doc = "   snd_ctl_elem_id_t object."]
+#[doc = " - snd_ctl_elem_value_set_numid(): Set the numid."]
+#[doc = " - Or use all of the following:"]
+#[doc = ""]
+#[doc = "   - snd_ctl_elem_value_set_interface()"]
+#[doc = "   - snd_ctl_elem_value_set_device()"]
+#[doc = "   - snd_ctl_elem_value_set_subdevice()"]
+#[doc = "   - snd_ctl_elem_value_set_name()"]
+#[doc = "   - snd_ctl_elem_value_set_index()"]
+#[doc = ""]
+#[doc = " When communicating with the driver (snd_ctl_elem_read(),"]
+#[doc = " snd_ctl_elem_write()), and the numid was given, the interface,"]
+#[doc = " device, ... are filled (even if you set the before). When the numid"]
+#[doc = " is unset (i.e. it is 0), it is filled."]
+#[doc = ""]
+#[doc = " \\par Communicating with the driver"]
+#[doc = ""]
+#[doc = " After the value container was created and filled with the ID of the"]
+#[doc = " desired element, the value(s) can be fetched from the driver (and"]
+#[doc = " thus from the hardware) or written to the driver."]
+#[doc = ""]
+#[doc = " To fetch a value, use snd_ctl_elem_read(). Thereafter, use the"]
+#[doc = " snd_ctl_elem_value_get_*() functions to obtain the actual value."]
+#[doc = ""]
+#[doc = " To write a new value, first use a snd_ctl_elem_value_set_*() to set"]
+#[doc = " it, then call snd_ctl_elem_write() to write it to the driver."]
 pub type snd_ctl_elem_value_t = _snd_ctl_elem_value;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_ctl_event {
     _unused: [u8; 0],
 }
+#[doc = " CTL event container"]
 pub type snd_ctl_event_t = _snd_ctl_event;
+#[doc = " Invalid type"]
 pub const SND_CTL_ELEM_TYPE_NONE: _snd_ctl_elem_type = 0;
+#[doc = " Boolean contents"]
 pub const SND_CTL_ELEM_TYPE_BOOLEAN: _snd_ctl_elem_type = 1;
+#[doc = " Integer contents"]
 pub const SND_CTL_ELEM_TYPE_INTEGER: _snd_ctl_elem_type = 2;
+#[doc = " Enumerated contents"]
 pub const SND_CTL_ELEM_TYPE_ENUMERATED: _snd_ctl_elem_type = 3;
+#[doc = " Bytes contents"]
 pub const SND_CTL_ELEM_TYPE_BYTES: _snd_ctl_elem_type = 4;
+#[doc = " IEC958 (S/PDIF) setting content"]
 pub const SND_CTL_ELEM_TYPE_IEC958: _snd_ctl_elem_type = 5;
+#[doc = " 64-bit integer contents"]
 pub const SND_CTL_ELEM_TYPE_INTEGER64: _snd_ctl_elem_type = 6;
+#[doc = " 64-bit integer contents"]
 pub const SND_CTL_ELEM_TYPE_LAST: _snd_ctl_elem_type = 6;
+#[doc = " CTL element type"]
 pub type _snd_ctl_elem_type = u32;
+#[doc = " CTL element type"]
 pub use self::_snd_ctl_elem_type as snd_ctl_elem_type_t;
+#[doc = " Card level"]
 pub const SND_CTL_ELEM_IFACE_CARD: _snd_ctl_elem_iface = 0;
+#[doc = " Hardware dependent device"]
 pub const SND_CTL_ELEM_IFACE_HWDEP: _snd_ctl_elem_iface = 1;
+#[doc = " Mixer"]
 pub const SND_CTL_ELEM_IFACE_MIXER: _snd_ctl_elem_iface = 2;
+#[doc = " PCM"]
 pub const SND_CTL_ELEM_IFACE_PCM: _snd_ctl_elem_iface = 3;
+#[doc = " RawMidi"]
 pub const SND_CTL_ELEM_IFACE_RAWMIDI: _snd_ctl_elem_iface = 4;
+#[doc = " Timer"]
 pub const SND_CTL_ELEM_IFACE_TIMER: _snd_ctl_elem_iface = 5;
+#[doc = " Sequencer"]
 pub const SND_CTL_ELEM_IFACE_SEQUENCER: _snd_ctl_elem_iface = 6;
+#[doc = " Sequencer"]
 pub const SND_CTL_ELEM_IFACE_LAST: _snd_ctl_elem_iface = 6;
+#[doc = " CTL related interface"]
 pub type _snd_ctl_elem_iface = u32;
+#[doc = " CTL related interface"]
 pub use self::_snd_ctl_elem_iface as snd_ctl_elem_iface_t;
+#[doc = " Elements related event"]
 pub const SND_CTL_EVENT_ELEM: _snd_ctl_event_type = 0;
+#[doc = " Elements related event"]
 pub const SND_CTL_EVENT_LAST: _snd_ctl_event_type = 0;
+#[doc = " Event class"]
 pub type _snd_ctl_event_type = u32;
+#[doc = " Event class"]
 pub use self::_snd_ctl_event_type as snd_ctl_event_type_t;
+#[doc = " Kernel level CTL"]
 pub const SND_CTL_TYPE_HW: _snd_ctl_type = 0;
+#[doc = " Shared memory client CTL"]
 pub const SND_CTL_TYPE_SHM: _snd_ctl_type = 1;
+#[doc = " INET client CTL (not yet implemented)"]
 pub const SND_CTL_TYPE_INET: _snd_ctl_type = 2;
+#[doc = " External control plugin"]
 pub const SND_CTL_TYPE_EXT: _snd_ctl_type = 3;
+#[doc = " CTL type"]
 pub type _snd_ctl_type = u32;
+#[doc = " CTL type"]
 pub use self::_snd_ctl_type as snd_ctl_type_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_ctl {
     _unused: [u8; 0],
 }
+#[doc = " CTL handle"]
 pub type snd_ctl_t = _snd_ctl;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_sctl {
     _unused: [u8; 0],
 }
+#[doc = " SCTL type"]
 pub type snd_sctl_t = _snd_sctl;
 extern "C" {
     pub fn snd_card_load(card: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
@@ -5283,13 +5954,19 @@ extern "C" {
 pub struct _snd_hctl_elem {
     _unused: [u8; 0],
 }
+#[doc = " HCTL element handle"]
 pub type snd_hctl_elem_t = _snd_hctl_elem;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_hctl {
     _unused: [u8; 0],
 }
+#[doc = " HCTL handle"]
 pub type snd_hctl_t = _snd_hctl;
+#[doc = " \\brief Compare function for sorting HCTL elements"]
+#[doc = " \\param e1 First element"]
+#[doc = " \\param e2 Second element"]
+#[doc = " \\return -1 if e1 < e2, 0 if e1 == e2, 1 if e1 > e2"]
 pub type snd_hctl_compare_t = ::std::option::Option<
     unsafe extern "C" fn(
         e1: *const snd_hctl_elem_t,
@@ -5302,6 +5979,11 @@ extern "C" {
         c2: *const snd_hctl_elem_t,
     ) -> ::std::os::raw::c_int;
 }
+#[doc = " \\brief HCTL callback function"]
+#[doc = " \\param hctl HCTL handle"]
+#[doc = " \\param mask event mask"]
+#[doc = " \\param elem related HCTL element (if any)"]
+#[doc = " \\return 0 on success otherwise a negative error code"]
 pub type snd_hctl_callback_t = ::std::option::Option<
     unsafe extern "C" fn(
         hctl: *mut snd_hctl_t,
@@ -5309,6 +5991,10 @@ pub type snd_hctl_callback_t = ::std::option::Option<
         elem: *mut snd_hctl_elem_t,
     ) -> ::std::os::raw::c_int,
 >;
+#[doc = " \\brief HCTL element callback function"]
+#[doc = " \\param elem HCTL element"]
+#[doc = " \\param mask event mask"]
+#[doc = " \\return 0 on success otherwise a negative error code"]
 pub type snd_hctl_elem_callback_t = ::std::option::Option<
     unsafe extern "C" fn(
         elem: *mut snd_hctl_elem_t,
@@ -5488,6 +6174,10 @@ extern "C" {
     );
 }
 extern "C" {
+    #[doc = "  \\defgroup SControl Setup Control Interface"]
+    #[doc = "  \\ingroup Control"]
+    #[doc = "  The setup control interface - set or modify control elements from a configuration file."]
+    #[doc = "  \\{"]
     pub fn snd_sctl_build(
         ctl: *mut *mut snd_sctl_t,
         handle: *mut snd_ctl_t,
@@ -5510,19 +6200,27 @@ extern "C" {
 pub struct _snd_mixer {
     _unused: [u8; 0],
 }
+#[doc = " Mixer handle"]
 pub type snd_mixer_t = _snd_mixer;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_mixer_class {
     _unused: [u8; 0],
 }
+#[doc = " Mixer elements class handle"]
 pub type snd_mixer_class_t = _snd_mixer_class;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_mixer_elem {
     _unused: [u8; 0],
 }
+#[doc = " Mixer element handle"]
 pub type snd_mixer_elem_t = _snd_mixer_elem;
+#[doc = " \\brief Mixer callback function"]
+#[doc = " \\param mixer Mixer handle"]
+#[doc = " \\param mask event mask"]
+#[doc = " \\param elem related mixer element (if any)"]
+#[doc = " \\return 0 on success otherwise a negative error code"]
 pub type snd_mixer_callback_t = ::std::option::Option<
     unsafe extern "C" fn(
         ctl: *mut snd_mixer_t,
@@ -5530,18 +6228,32 @@ pub type snd_mixer_callback_t = ::std::option::Option<
         elem: *mut snd_mixer_elem_t,
     ) -> ::std::os::raw::c_int,
 >;
+#[doc = " \\brief Mixer element callback function"]
+#[doc = " \\param elem Mixer element"]
+#[doc = " \\param mask event mask"]
+#[doc = " \\return 0 on success otherwise a negative error code"]
 pub type snd_mixer_elem_callback_t = ::std::option::Option<
     unsafe extern "C" fn(
         elem: *mut snd_mixer_elem_t,
         mask: ::std::os::raw::c_uint,
     ) -> ::std::os::raw::c_int,
 >;
+#[doc = " \\brief Compare function for sorting mixer elements"]
+#[doc = " \\param e1 First element"]
+#[doc = " \\param e2 Second element"]
+#[doc = " \\return -1 if e1 < e2, 0 if e1 == e2, 1 if e1 > e2"]
 pub type snd_mixer_compare_t = ::std::option::Option<
     unsafe extern "C" fn(
         e1: *const snd_mixer_elem_t,
         e2: *const snd_mixer_elem_t,
     ) -> ::std::os::raw::c_int,
 >;
+#[doc = " \\brief Event callback for the mixer class"]
+#[doc = " \\param class_ Mixer class"]
+#[doc = " \\param mask Event mask (SND_CTL_EVENT_*)"]
+#[doc = " \\param helem HCTL element which invoked the event"]
+#[doc = " \\param melem Mixer element associated to HCTL element"]
+#[doc = " \\return zero if success, otherwise a negative error value"]
 pub type snd_mixer_event_t = ::std::option::Option<
     unsafe extern "C" fn(
         class_: *mut snd_mixer_class_t,
@@ -5552,7 +6264,9 @@ pub type snd_mixer_event_t = ::std::option::Option<
 >;
 pub const SND_MIXER_ELEM_SIMPLE: _snd_mixer_elem_type = 0;
 pub const SND_MIXER_ELEM_LAST: _snd_mixer_elem_type = 0;
+#[doc = " Mixer element type"]
 pub type _snd_mixer_elem_type = u32;
+#[doc = " Mixer element type"]
 pub use self::_snd_mixer_elem_type as snd_mixer_elem_type_t;
 extern "C" {
     pub fn snd_mixer_open(
@@ -5780,30 +6494,53 @@ extern "C" {
         compare: snd_mixer_compare_t,
     ) -> ::std::os::raw::c_int;
 }
+#[doc = " Unknown"]
 pub const SND_MIXER_SCHN_UNKNOWN: _snd_mixer_selem_channel_id = -1;
+#[doc = " Front left"]
 pub const SND_MIXER_SCHN_FRONT_LEFT: _snd_mixer_selem_channel_id = 0;
+#[doc = " Front right"]
 pub const SND_MIXER_SCHN_FRONT_RIGHT: _snd_mixer_selem_channel_id = 1;
+#[doc = " Rear left"]
 pub const SND_MIXER_SCHN_REAR_LEFT: _snd_mixer_selem_channel_id = 2;
+#[doc = " Rear right"]
 pub const SND_MIXER_SCHN_REAR_RIGHT: _snd_mixer_selem_channel_id = 3;
+#[doc = " Front center"]
 pub const SND_MIXER_SCHN_FRONT_CENTER: _snd_mixer_selem_channel_id = 4;
+#[doc = " Woofer"]
 pub const SND_MIXER_SCHN_WOOFER: _snd_mixer_selem_channel_id = 5;
+#[doc = " Side Left"]
 pub const SND_MIXER_SCHN_SIDE_LEFT: _snd_mixer_selem_channel_id = 6;
+#[doc = " Side Right"]
 pub const SND_MIXER_SCHN_SIDE_RIGHT: _snd_mixer_selem_channel_id = 7;
+#[doc = " Rear Center"]
 pub const SND_MIXER_SCHN_REAR_CENTER: _snd_mixer_selem_channel_id = 8;
+#[doc = " Rear Center"]
 pub const SND_MIXER_SCHN_LAST: _snd_mixer_selem_channel_id = 31;
+#[doc = " Mono (Front left alias)"]
 pub const SND_MIXER_SCHN_MONO: _snd_mixer_selem_channel_id = 0;
+#[doc = " Mixer simple element channel identifier"]
 pub type _snd_mixer_selem_channel_id = i32;
+#[doc = " Mixer simple element channel identifier"]
 pub use self::_snd_mixer_selem_channel_id as snd_mixer_selem_channel_id_t;
+#[doc = " no abstraction - try use all universal controls from driver"]
 pub const SND_MIXER_SABSTRACT_NONE: snd_mixer_selem_regopt_abstract = 0;
+#[doc = " basic abstraction - Master,PCM,CD,Aux,Record-Gain etc."]
 pub const SND_MIXER_SABSTRACT_BASIC: snd_mixer_selem_regopt_abstract = 1;
+#[doc = " Mixer simple element - register options - abstraction level"]
 pub type snd_mixer_selem_regopt_abstract = u32;
+#[doc = " Mixer simple element - register options"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_mixer_selem_regopt {
+    #[doc = " structure version"]
     pub ver: ::std::os::raw::c_int,
+    #[doc = " v1: abstract layer selection"]
     pub abstract_: snd_mixer_selem_regopt_abstract,
+    #[doc = " v1: device name (must be NULL when playback_pcm or capture_pcm != NULL)"]
     pub device: *const ::std::os::raw::c_char,
+    #[doc = " v1: playback PCM connected to mixer device (NULL == none)"]
     pub playback_pcm: *mut snd_pcm_t,
+    #[doc = " v1: capture PCM connected to mixer device (NULL == none)"]
     pub capture_pcm: *mut snd_pcm_t,
 }
 #[repr(C)]
@@ -5811,6 +6548,7 @@ pub struct snd_mixer_selem_regopt {
 pub struct _snd_mixer_selem_id {
     _unused: [u8; 0],
 }
+#[doc = " Mixer simple element identifier"]
 pub type snd_mixer_selem_id_t = _snd_mixer_selem_id;
 extern "C" {
     pub fn snd_mixer_selem_channel_name(
@@ -6184,206 +6922,352 @@ extern "C" {
         str: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
+#[doc = " Sequencer event data type"]
 pub type snd_seq_event_type_t = ::std::os::raw::c_uchar;
+#[doc = " system status; event data type = #snd_seq_result_t"]
 pub const SND_SEQ_EVENT_SYSTEM: snd_seq_event_type = 0;
+#[doc = " returned result status; event data type = #snd_seq_result_t"]
 pub const SND_SEQ_EVENT_RESULT: snd_seq_event_type = 1;
+#[doc = " note on and off with duration; event data type = #snd_seq_ev_note_t"]
 pub const SND_SEQ_EVENT_NOTE: snd_seq_event_type = 5;
+#[doc = " note on; event data type = #snd_seq_ev_note_t"]
 pub const SND_SEQ_EVENT_NOTEON: snd_seq_event_type = 6;
+#[doc = " note off; event data type = #snd_seq_ev_note_t"]
 pub const SND_SEQ_EVENT_NOTEOFF: snd_seq_event_type = 7;
+#[doc = " key pressure change (aftertouch); event data type = #snd_seq_ev_note_t"]
 pub const SND_SEQ_EVENT_KEYPRESS: snd_seq_event_type = 8;
+#[doc = " controller; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_CONTROLLER: snd_seq_event_type = 10;
+#[doc = " program change; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_PGMCHANGE: snd_seq_event_type = 11;
+#[doc = " channel pressure; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_CHANPRESS: snd_seq_event_type = 12;
+#[doc = " pitchwheel; event data type = #snd_seq_ev_ctrl_t; data is from -8192 to 8191)"]
 pub const SND_SEQ_EVENT_PITCHBEND: snd_seq_event_type = 13;
+#[doc = " 14 bit controller value; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_CONTROL14: snd_seq_event_type = 14;
+#[doc = " 14 bit NRPN;  event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_NONREGPARAM: snd_seq_event_type = 15;
+#[doc = " 14 bit RPN; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_REGPARAM: snd_seq_event_type = 16;
+#[doc = " SPP with LSB and MSB values; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_SONGPOS: snd_seq_event_type = 20;
+#[doc = " Song Select with song ID number; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_SONGSEL: snd_seq_event_type = 21;
+#[doc = " midi time code quarter frame; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_QFRAME: snd_seq_event_type = 22;
+#[doc = " SMF Time Signature event; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_TIMESIGN: snd_seq_event_type = 23;
+#[doc = " SMF Key Signature event; event data type = #snd_seq_ev_ctrl_t"]
 pub const SND_SEQ_EVENT_KEYSIGN: snd_seq_event_type = 24;
+#[doc = " MIDI Real Time Start message; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_START: snd_seq_event_type = 30;
+#[doc = " MIDI Real Time Continue message; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_CONTINUE: snd_seq_event_type = 31;
+#[doc = " MIDI Real Time Stop message; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_STOP: snd_seq_event_type = 32;
+#[doc = " Set tick queue position; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_SETPOS_TICK: snd_seq_event_type = 33;
+#[doc = " Set real-time queue position; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_SETPOS_TIME: snd_seq_event_type = 34;
+#[doc = " (SMF) Tempo event; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_TEMPO: snd_seq_event_type = 35;
+#[doc = " MIDI Real Time Clock message; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_CLOCK: snd_seq_event_type = 36;
+#[doc = " MIDI Real Time Tick message; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_TICK: snd_seq_event_type = 37;
+#[doc = " Queue timer skew; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_QUEUE_SKEW: snd_seq_event_type = 38;
+#[doc = " Sync position changed; event data type = #snd_seq_ev_queue_control_t"]
 pub const SND_SEQ_EVENT_SYNC_POS: snd_seq_event_type = 39;
+#[doc = " Tune request; event data type = none"]
 pub const SND_SEQ_EVENT_TUNE_REQUEST: snd_seq_event_type = 40;
+#[doc = " Reset to power-on state; event data type = none"]
 pub const SND_SEQ_EVENT_RESET: snd_seq_event_type = 41;
+#[doc = " Active sensing event; event data type = none"]
 pub const SND_SEQ_EVENT_SENSING: snd_seq_event_type = 42;
+#[doc = " Echo-back event; event data type = any type"]
 pub const SND_SEQ_EVENT_ECHO: snd_seq_event_type = 50;
+#[doc = " OSS emulation raw event; event data type = any type"]
 pub const SND_SEQ_EVENT_OSS: snd_seq_event_type = 51;
+#[doc = " New client has connected; event data type = #snd_seq_addr_t"]
 pub const SND_SEQ_EVENT_CLIENT_START: snd_seq_event_type = 60;
+#[doc = " Client has left the system; event data type = #snd_seq_addr_t"]
 pub const SND_SEQ_EVENT_CLIENT_EXIT: snd_seq_event_type = 61;
+#[doc = " Client status/info has changed; event data type = #snd_seq_addr_t"]
 pub const SND_SEQ_EVENT_CLIENT_CHANGE: snd_seq_event_type = 62;
+#[doc = " New port was created; event data type = #snd_seq_addr_t"]
 pub const SND_SEQ_EVENT_PORT_START: snd_seq_event_type = 63;
+#[doc = " Port was deleted from system; event data type = #snd_seq_addr_t"]
 pub const SND_SEQ_EVENT_PORT_EXIT: snd_seq_event_type = 64;
+#[doc = " Port status/info has changed; event data type = #snd_seq_addr_t"]
 pub const SND_SEQ_EVENT_PORT_CHANGE: snd_seq_event_type = 65;
+#[doc = " Ports connected; event data type = #snd_seq_connect_t"]
 pub const SND_SEQ_EVENT_PORT_SUBSCRIBED: snd_seq_event_type = 66;
+#[doc = " Ports disconnected; event data type = #snd_seq_connect_t"]
 pub const SND_SEQ_EVENT_PORT_UNSUBSCRIBED: snd_seq_event_type = 67;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR0: snd_seq_event_type = 90;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR1: snd_seq_event_type = 91;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR2: snd_seq_event_type = 92;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR3: snd_seq_event_type = 93;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR4: snd_seq_event_type = 94;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR5: snd_seq_event_type = 95;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR6: snd_seq_event_type = 96;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR7: snd_seq_event_type = 97;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR8: snd_seq_event_type = 98;
+#[doc = " user-defined event; event data type = any (fixed size)"]
 pub const SND_SEQ_EVENT_USR9: snd_seq_event_type = 99;
+#[doc = " system exclusive data (variable length);  event data type = #snd_seq_ev_ext_t"]
 pub const SND_SEQ_EVENT_SYSEX: snd_seq_event_type = 130;
+#[doc = " error event;  event data type = #snd_seq_ev_ext_t"]
 pub const SND_SEQ_EVENT_BOUNCE: snd_seq_event_type = 131;
+#[doc = " reserved for user apps;  event data type = #snd_seq_ev_ext_t"]
 pub const SND_SEQ_EVENT_USR_VAR0: snd_seq_event_type = 135;
+#[doc = " reserved for user apps; event data type = #snd_seq_ev_ext_t"]
 pub const SND_SEQ_EVENT_USR_VAR1: snd_seq_event_type = 136;
+#[doc = " reserved for user apps; event data type = #snd_seq_ev_ext_t"]
 pub const SND_SEQ_EVENT_USR_VAR2: snd_seq_event_type = 137;
+#[doc = " reserved for user apps; event data type = #snd_seq_ev_ext_t"]
 pub const SND_SEQ_EVENT_USR_VAR3: snd_seq_event_type = 138;
+#[doc = " reserved for user apps; event data type = #snd_seq_ev_ext_t"]
 pub const SND_SEQ_EVENT_USR_VAR4: snd_seq_event_type = 139;
+#[doc = " NOP; ignored in any case"]
 pub const SND_SEQ_EVENT_NONE: snd_seq_event_type = 255;
+#[doc = " Sequencer event type"]
 pub type snd_seq_event_type = u32;
+#[doc = " Sequencer event address"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_addr {
+    #[doc = "< Client id"]
     pub client: ::std::os::raw::c_uchar,
+    #[doc = "< Port id"]
     pub port: ::std::os::raw::c_uchar,
 }
+#[doc = " Sequencer event address"]
 pub type snd_seq_addr_t = snd_seq_addr;
+#[doc = " Connection (subscription) between ports"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_connect {
+    #[doc = "< sender address"]
     pub sender: snd_seq_addr_t,
+    #[doc = "< destination address"]
     pub dest: snd_seq_addr_t,
 }
+#[doc = " Connection (subscription) between ports"]
 pub type snd_seq_connect_t = snd_seq_connect;
+#[doc = " Real-time data record"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_real_time {
+    #[doc = "< seconds"]
     pub tv_sec: ::std::os::raw::c_uint,
+    #[doc = "< nanoseconds"]
     pub tv_nsec: ::std::os::raw::c_uint,
 }
+#[doc = " Real-time data record"]
 pub type snd_seq_real_time_t = snd_seq_real_time;
+#[doc = " (MIDI) Tick-time data record"]
 pub type snd_seq_tick_time_t = ::std::os::raw::c_uint;
+#[doc = " unioned time stamp"]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union snd_seq_timestamp {
+    #[doc = "< tick-time"]
     pub tick: snd_seq_tick_time_t,
+    #[doc = "< real-time"]
     pub time: snd_seq_real_time,
     _bindgen_union_align: [u32; 2usize],
 }
+#[doc = " unioned time stamp"]
 pub type snd_seq_timestamp_t = snd_seq_timestamp;
+#[doc = " Note event"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_ev_note {
+    #[doc = "< channel number"]
     pub channel: ::std::os::raw::c_uchar,
+    #[doc = "< note"]
     pub note: ::std::os::raw::c_uchar,
+    #[doc = "< velocity"]
     pub velocity: ::std::os::raw::c_uchar,
+    #[doc = "< note-off velocity; only for #SND_SEQ_EVENT_NOTE"]
     pub off_velocity: ::std::os::raw::c_uchar,
+    #[doc = "< duration until note-off; only for #SND_SEQ_EVENT_NOTE"]
     pub duration: ::std::os::raw::c_uint,
 }
+#[doc = " Note event"]
 pub type snd_seq_ev_note_t = snd_seq_ev_note;
+#[doc = " Controller event"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_ev_ctrl {
+    #[doc = "< channel number"]
     pub channel: ::std::os::raw::c_uchar,
+    #[doc = "< reserved"]
     pub unused: [::std::os::raw::c_uchar; 3usize],
+    #[doc = "< control parameter"]
     pub param: ::std::os::raw::c_uint,
+    #[doc = "< control value"]
     pub value: ::std::os::raw::c_int,
 }
+#[doc = " Controller event"]
 pub type snd_seq_ev_ctrl_t = snd_seq_ev_ctrl;
+#[doc = " generic set of bytes (12x8 bit)"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_ev_raw8 {
+    #[doc = "< 8 bit value"]
     pub d: [::std::os::raw::c_uchar; 12usize],
 }
+#[doc = " generic set of bytes (12x8 bit)"]
 pub type snd_seq_ev_raw8_t = snd_seq_ev_raw8;
+#[doc = " generic set of integers (3x32 bit)"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_ev_raw32 {
+    #[doc = "< 32 bit value"]
     pub d: [::std::os::raw::c_uint; 3usize],
 }
+#[doc = " generic set of integers (3x32 bit)"]
 pub type snd_seq_ev_raw32_t = snd_seq_ev_raw32;
+#[doc = " external stored data"]
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_ev_ext {
+    #[doc = "< length of data"]
     pub len: ::std::os::raw::c_uint,
+    #[doc = "< pointer to data (note: can be 64-bit)"]
     pub ptr: *mut ::std::os::raw::c_void,
 }
+#[doc = " external stored data"]
 pub type snd_seq_ev_ext_t = snd_seq_ev_ext;
+#[doc = " Result events"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_result {
+    #[doc = "< processed event type"]
     pub event: ::std::os::raw::c_int,
+    #[doc = "< status"]
     pub result: ::std::os::raw::c_int,
 }
+#[doc = " Result events"]
 pub type snd_seq_result_t = snd_seq_result;
+#[doc = " Queue skew values"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct snd_seq_queue_skew {
+    #[doc = "< skew value"]
     pub value: ::std::os::raw::c_uint,
+    #[doc = "< skew base"]
     pub base: ::std::os::raw::c_uint,
 }
+#[doc = " Queue skew values"]
 pub type snd_seq_queue_skew_t = snd_seq_queue_skew;
+#[doc = " queue timer control"]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct snd_seq_ev_queue_control {
+    #[doc = "< affected queue"]
     pub queue: ::std::os::raw::c_uchar,
+    #[doc = "< reserved"]
     pub unused: [::std::os::raw::c_uchar; 3usize],
+    #[doc = "< data value union"]
     pub param: snd_seq_ev_queue_control__bindgen_ty_1,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union snd_seq_ev_queue_control__bindgen_ty_1 {
+    #[doc = "< affected value (e.g. tempo)"]
     pub value: ::std::os::raw::c_int,
+    #[doc = "< time"]
     pub time: snd_seq_timestamp_t,
+    #[doc = "< sync position"]
     pub position: ::std::os::raw::c_uint,
+    #[doc = "< queue skew"]
     pub skew: snd_seq_queue_skew_t,
+    #[doc = "< any data"]
     pub d32: [::std::os::raw::c_uint; 2usize],
+    #[doc = "< any data"]
     pub d8: [::std::os::raw::c_uchar; 8usize],
     _bindgen_union_align: [u32; 2usize],
 }
+#[doc = " queue timer control"]
 pub type snd_seq_ev_queue_control_t = snd_seq_ev_queue_control;
+#[doc = " Sequencer event"]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct snd_seq_event {
+    #[doc = "< event type"]
     pub type_: snd_seq_event_type_t,
+    #[doc = "< event flags"]
     pub flags: ::std::os::raw::c_uchar,
+    #[doc = "< tag"]
     pub tag: ::std::os::raw::c_uchar,
+    #[doc = "< schedule queue"]
     pub queue: ::std::os::raw::c_uchar,
+    #[doc = "< schedule time"]
     pub time: snd_seq_timestamp_t,
+    #[doc = "< source address"]
     pub source: snd_seq_addr_t,
+    #[doc = "< destination address"]
     pub dest: snd_seq_addr_t,
+    #[doc = "< event data..."]
     pub data: snd_seq_event__bindgen_ty_1,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union snd_seq_event__bindgen_ty_1 {
+    #[doc = "< note information"]
     pub note: snd_seq_ev_note_t,
+    #[doc = "< MIDI control information"]
     pub control: snd_seq_ev_ctrl_t,
+    #[doc = "< raw8 data"]
     pub raw8: snd_seq_ev_raw8_t,
+    #[doc = "< raw32 data"]
     pub raw32: snd_seq_ev_raw32_t,
+    #[doc = "< external data"]
     pub ext: snd_seq_ev_ext_t,
+    #[doc = "< queue control"]
     pub queue: snd_seq_ev_queue_control_t,
+    #[doc = "< timestamp"]
     pub time: snd_seq_timestamp_t,
+    #[doc = "< address"]
     pub addr: snd_seq_addr_t,
+    #[doc = "< connect information"]
     pub connect: snd_seq_connect_t,
+    #[doc = "< operation result code"]
     pub result: snd_seq_result_t,
     _bindgen_union_align: [u32; 3usize],
 }
+#[doc = " Sequencer event"]
 pub type snd_seq_event_t = snd_seq_event;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_seq {
     _unused: [u8; 0],
 }
+#[doc = " Sequencer handle"]
 pub type snd_seq_t = _snd_seq;
+#[doc = "< hardware"]
 pub const SND_SEQ_TYPE_HW: _snd_seq_type = 0;
+#[doc = "< shared memory (NYI)"]
 pub const SND_SEQ_TYPE_SHM: _snd_seq_type = 1;
+#[doc = "< network (NYI)"]
 pub const SND_SEQ_TYPE_INET: _snd_seq_type = 2;
+#[doc = " sequencer handle type"]
 pub type _snd_seq_type = u32;
+#[doc = " sequencer handle type"]
 pub use self::_snd_seq_type as snd_seq_type_t;
 extern "C" {
     pub fn snd_seq_open(
@@ -6465,6 +7349,7 @@ extern "C" {
 pub struct _snd_seq_system_info {
     _unused: [u8; 0],
 }
+#[doc = " system information container"]
 pub type snd_seq_system_info_t = _snd_seq_system_info;
 extern "C" {
     pub fn snd_seq_system_info_sizeof() -> usize;
@@ -6524,10 +7409,15 @@ extern "C" {
 pub struct _snd_seq_client_info {
     _unused: [u8; 0],
 }
+#[doc = " client information container"]
 pub type snd_seq_client_info_t = _snd_seq_client_info;
+#[doc = "< user client"]
 pub const SND_SEQ_USER_CLIENT: snd_seq_client_type = 1;
+#[doc = "< kernel client"]
 pub const SND_SEQ_KERNEL_CLIENT: snd_seq_client_type = 2;
+#[doc = " client types"]
 pub type snd_seq_client_type = u32;
+#[doc = " client types"]
 pub use self::snd_seq_client_type as snd_seq_client_type_t;
 extern "C" {
     pub fn snd_seq_client_info_sizeof() -> usize;
@@ -6676,6 +7566,7 @@ extern "C" {
 pub struct _snd_seq_client_pool {
     _unused: [u8; 0],
 }
+#[doc = " client pool information container"]
 pub type snd_seq_client_pool_t = _snd_seq_client_pool;
 extern "C" {
     pub fn snd_seq_client_pool_sizeof() -> usize;
@@ -6740,6 +7631,7 @@ extern "C" {
 pub struct _snd_seq_port_info {
     _unused: [u8; 0],
 }
+#[doc = " port information container"]
 pub type snd_seq_port_info_t = _snd_seq_port_info;
 extern "C" {
     pub fn snd_seq_port_info_sizeof() -> usize;
@@ -6937,6 +7829,7 @@ extern "C" {
 pub struct _snd_seq_port_subscribe {
     _unused: [u8; 0],
 }
+#[doc = " port subscription container"]
 pub type snd_seq_port_subscribe_t = _snd_seq_port_subscribe;
 extern "C" {
     pub fn snd_seq_port_subscribe_sizeof() -> usize;
@@ -7044,9 +7937,13 @@ extern "C" {
 pub struct _snd_seq_query_subscribe {
     _unused: [u8; 0],
 }
+#[doc = " subscription query container"]
 pub type snd_seq_query_subscribe_t = _snd_seq_query_subscribe;
+#[doc = "< query read subscriptions"]
 pub const SND_SEQ_QUERY_SUBS_READ: snd_seq_query_subs_type_t = 0;
+#[doc = "< query write subscriptions"]
 pub const SND_SEQ_QUERY_SUBS_WRITE: snd_seq_query_subs_type_t = 1;
+#[doc = " type of query subscription"]
 pub type snd_seq_query_subs_type_t = u32;
 extern "C" {
     pub fn snd_seq_query_subscribe_sizeof() -> usize;
@@ -7161,24 +8058,28 @@ extern "C" {
 pub struct _snd_seq_queue_info {
     _unused: [u8; 0],
 }
+#[doc = " queue information container"]
 pub type snd_seq_queue_info_t = _snd_seq_queue_info;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_seq_queue_status {
     _unused: [u8; 0],
 }
+#[doc = " queue status container"]
 pub type snd_seq_queue_status_t = _snd_seq_queue_status;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_seq_queue_tempo {
     _unused: [u8; 0],
 }
+#[doc = " queue tempo container"]
 pub type snd_seq_queue_tempo_t = _snd_seq_queue_tempo;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_seq_queue_timer {
     _unused: [u8; 0],
 }
+#[doc = " queue timer information container"]
 pub type snd_seq_queue_timer_t = _snd_seq_queue_timer;
 extern "C" {
     pub fn snd_seq_queue_info_sizeof() -> usize;
@@ -7427,6 +8328,7 @@ extern "C" {
 pub const SND_SEQ_TIMER_ALSA: snd_seq_queue_timer_type_t = 0;
 pub const SND_SEQ_TIMER_MIDI_CLOCK: snd_seq_queue_timer_type_t = 1;
 pub const SND_SEQ_TIMER_MIDI_TICK: snd_seq_queue_timer_type_t = 2;
+#[doc = " sequencer timer sources"]
 pub type snd_seq_queue_timer_type_t = u32;
 extern "C" {
     pub fn snd_seq_queue_timer_sizeof() -> usize;
@@ -7493,6 +8395,10 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    #[doc = "  \\defgroup SeqEvent Sequencer Event API"]
+    #[doc = "  Sequencer Event API"]
+    #[doc = "  \\ingroup Sequencer"]
+    #[doc = "  \\{"]
     pub fn snd_seq_free_event(ev: *mut snd_seq_event_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -7557,6 +8463,7 @@ extern "C" {
 pub struct _snd_seq_remove_events {
     _unused: [u8; 0],
 }
+#[doc = " event removal conditionals"]
 pub type snd_seq_remove_events_t = _snd_seq_remove_events;
 extern "C" {
     pub fn snd_seq_remove_events_sizeof() -> usize;
@@ -7659,6 +8566,10 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    #[doc = "  \\defgroup SeqMisc Sequencer Miscellaneous"]
+    #[doc = "  Sequencer Miscellaneous"]
+    #[doc = "  \\ingroup Sequencer"]
+    #[doc = "  \\{"]
     pub fn snd_seq_set_bit(nr: ::std::os::raw::c_int, array: *mut ::std::os::raw::c_void);
 }
 extern "C" {
@@ -7780,6 +8691,7 @@ extern "C" {
 pub struct snd_midi_event {
     _unused: [u8; 0],
 }
+#[doc = " container for sequencer midi event parsers"]
 pub type snd_midi_event_t = snd_midi_event;
 extern "C" {
     pub fn snd_midi_event_new(
