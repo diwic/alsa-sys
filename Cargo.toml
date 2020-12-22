@@ -1,8 +1,8 @@
 [package]
 name = "alsa-sys"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Pierre Krieger <pierre.krieger1708@gmail.com>",
-"David Henningsson <diwic@ubuntu.com>"]
+"David Henningsson <coding@diwic.se>"]
 build = "build.rs"
 description = "FFI bindings for the ALSA project (Advanced Linux Sound Architecture)"
 license = "MIT"
