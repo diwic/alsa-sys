@@ -111,6 +111,8 @@ impl<T> ::std::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
+pub type va_list = __builtin_va_list;
+pub type __gnuc_va_list = __builtin_va_list;
 extern "C" {
     #[doc = "  \\defgroup Global Global defines and functions"]
     #[doc = "  Global defines and functions."]
@@ -8743,4 +8745,13 @@ extern "C" {
         count: ::std::os::raw::c_long,
         ev: *const snd_seq_event_t,
     ) -> ::std::os::raw::c_long;
+}
+pub type __builtin_va_list = [__va_list_tag; 1usize];
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __va_list_tag {
+    pub gp_offset: ::std::os::raw::c_uint,
+    pub fp_offset: ::std::os::raw::c_uint,
+    pub overflow_arg_area: *mut ::std::os::raw::c_void,
+    pub reg_save_area: *mut ::std::os::raw::c_void,
 }

@@ -28,15 +28,6 @@ pub const SND_SEQ_EVENT_LENGTH_MASK: u8 = 3 << 2;
 pub const SND_SEQ_EVENT_LENGTH_VARIABLE: u8 = 1 << 2;
 pub const SND_SEQ_EVENT_LENGTH_VARUSR: u8 = 2 << 2;
 
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __va_list_tag {
-    pub gp_offset: ::std::os::raw::c_uint,
-    pub fp_offset: ::std::os::raw::c_uint,
-    pub overflow_arg_area: *mut ::std::os::raw::c_void,
-    pub reg_save_area: *mut ::std::os::raw::c_void,
-}
-
 #[cfg(feature = "use-bindgen")]
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 

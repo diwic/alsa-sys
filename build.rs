@@ -48,6 +48,7 @@ fn generate_bindings(alsa_library: &pkg_config::Library) {
         .layout_tests(false)
         .whitelist_function("snd_.*")
         .whitelist_type("_?snd_.*")
+        .whitelist_type(".*va_list.*")
         .with_codegen_config(codegen_config)
         .clang_args(clang_include_args)
         .header("wrapper.h")
