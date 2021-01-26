@@ -3,26 +3,19 @@ extern crate pkg_config;
 #[cfg(feature = "use-bindgen")]
 extern crate bindgen;
 
-#[allow(unused_variables)]
 fn main() {
-    let alsa_library = match pkg_config::Config::new().statik(false).probe("alsa") {
-        Err(e) => {
-            match e {
-                pkg_config::Error::Failure { .. } => panic! (
-                    "Pkg-config failed - usually this is because alsa development headers are not installed.\n\n\
-                    For Fedora users:\n# dnf install alsa-lib-devel\n\n\
-                    For Debian/Ubuntu users:\n# apt-get install libasound2-dev\n\n\
-                    pkg_config details:\n{}",
-                    e
-                ),
-                _ => panic!("{}", e)
-            }
-        },
-        Ok(l) => l
+    match pkg_config::Config::new().statik(false).probe("alsa") {
+        Err(pkg_config::Error::Failure { command, output }) => panic!(
+            "Pkg-config failed - usually this is because alsa development headers are not installed.\n\n\
+            For Fedora users:\n# dnf install alsa-lib-devel\n\n\
+            For Debian/Ubuntu users:\n# apt-get install libasound2-dev\n\n\
+            pkg_config details:\n{}\n", pkg_config::Error::Failure { command, output }),
+        Err(e) => panic!("{}", e),
+        Ok(_alsa_library) => {
+            #[cfg(feature = "use-bindgen")]
+            generate_bindings(&_alsa_library);
+        } 
     };
-
-    #[cfg(feature = "use-bindgen")]
-    generate_bindings(&alsa_library);
 }
 
 #[cfg(feature = "use-bindgen")]
