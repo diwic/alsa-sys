@@ -18,4 +18,11 @@ libc = "0.2.65"
 
 [build-dependencies]
 pkg-config = "0.3"
+bindgen = { version = "0.56", optional = true }
 
+[features]
+use-bindgen = ["bindgen"]
+
+[[bin]]
+name = "regenerate_bindings"
+path = "regenerate_bindings.rs"
