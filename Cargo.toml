@@ -26,3 +26,6 @@ use-bindgen = ["bindgen"]
 [[bin]]
 name = "regenerate_bindings"
 path = "regenerate_bindings.rs"
+
+[lib]
+doctest = false
