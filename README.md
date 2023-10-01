@@ -6,6 +6,14 @@ To avoid too long build times, the finished binding is committed into this
 repository. If you would prefer to generate the bindings at build time, there
 is a `use-bindings` feature to do so.
 
+## Installing build dependencies
+
+### Debian/Ubuntu/Mint
+
+```
+sudo apt install libasound2-dev
+```
+
 ## Regenerating bindings
 
 To regenerate the bindings yourself, run `regenerate_bindings.sh`. This
