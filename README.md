@@ -14,6 +14,12 @@ is a `use-bindings` feature to do so.
 sudo apt install libasound2-dev
 ```
 
+### Fedora/Centos
+
+```
+dnf install alsa-lib-devel
+```
+
 ## Regenerating bindings
 
 To regenerate the bindings yourself, run `regenerate_bindings.sh`. This
