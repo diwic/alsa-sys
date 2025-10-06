@@ -1,9 +1,10 @@
 #![allow(non_camel_case_types)]
+#![no_std]
 
 use libc::{pid_t, pollfd, timespec, timeval, FILE};
 
-pub const SND_PCM_NONBLOCK: ::std::os::raw::c_int = 0x1;
-pub const SND_PCM_ASYNC: ::std::os::raw::c_int = 0x2;
+pub const SND_PCM_NONBLOCK: core::ffi::c_int = 0x1;
+pub const SND_PCM_ASYNC: core::ffi::c_int = 0x2;
 
 pub const SND_SEQ_OPEN_OUTPUT: i32 = 1;
 pub const SND_SEQ_OPEN_INPUT: i32 = 2;
