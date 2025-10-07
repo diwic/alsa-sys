@@ -35,17 +35,18 @@ fn generate_bindings(alsa_library: &pkg_config::Library) {
     codegen_config.insert(bindgen::CodegenConfig::TYPES);
 
     let builder = bindgen::Builder::default()
+        .use_core()
         .size_t_is_usize(true)
-        .whitelist_recursively(false)
+        .allowlist_recursively(false)
         .prepend_enum_name(false)
         .layout_tests(false)
-        .whitelist_function("snd_.*")
-        .whitelist_type("_?snd_.*")
-        .whitelist_type(".*va_list.*")
+        .allowlist_function("snd_.*")
+        .allowlist_type("_?snd_.*")
+        .allowlist_type(".*va_list.*")
         .with_codegen_config(codegen_config)
         .clang_args(clang_include_args)
         .header("wrapper.h")
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks));
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()));
     let bindings = builder.generate().expect("Unable to generate bindings");
 
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
