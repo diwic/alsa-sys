@@ -1,4 +1,5 @@
 #![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
 #![no_std]
 
 use libc::{pid_t, pollfd, timespec, timeval, FILE};
