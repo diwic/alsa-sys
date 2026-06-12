@@ -1,8 +1,10 @@
 [package]
 name = "alsa-sys"
 version = "0.4.0"
-authors = ["Pierre Krieger <pierre.krieger1708@gmail.com>",
-"David Henningsson <coding@diwic.se>"]
+authors = [
+    "Pierre Krieger <pierre.krieger1708@gmail.com>",
+    "David Henningsson <coding@diwic.se>",
+]
 build = "build.rs"
 description = "FFI bindings for the ALSA project (Advanced Linux Sound Architecture)"
 license = "MIT"
@@ -11,13 +13,13 @@ repository = "https://github.com/diwic/alsa-sys"
 documentation = "http://docs.rs/alsa-sys"
 keywords = ["ALSA", "audio", "sound"]
 categories = ["os::unix-apis", "external-ffi-bindings", "multimedia::audio"]
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-libc = "0.2.178"
+libc = "0.2.186"
 
 [build-dependencies]
-pkg-config = "0.3.7"
+pkg-config = "0.3.33"
 bindgen = { version = "0.72", optional = true }
 
 [features]
