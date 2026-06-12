@@ -383,12 +383,66 @@ unsafe extern "C" {
 unsafe extern "C" {
     pub fn snd_strerror(errnum: ::core::ffi::c_int) -> *const ::core::ffi::c_char;
 }
+pub type snd_lib_log_handler_t = ::core::option::Option<
+    unsafe extern "C" fn(
+        prio: ::core::ffi::c_int,
+        interface: ::core::ffi::c_int,
+        file: *const ::core::ffi::c_char,
+        line: ::core::ffi::c_int,
+        function: *const ::core::ffi::c_char,
+        errcode: ::core::ffi::c_int,
+        fmt: *const ::core::ffi::c_char,
+        arg: *mut __va_list_tag,
+    ),
+>;
+unsafe extern "C" {
+    pub fn snd_lib_log_filter(
+        prio: ::core::ffi::c_int,
+        interface: ::core::ffi::c_int,
+        configstr: *const ::core::ffi::c_char,
+    ) -> ::core::ffi::c_int;
+}
+unsafe extern "C" {
+    pub fn snd_lib_log(
+        prio: ::core::ffi::c_int,
+        interface: ::core::ffi::c_int,
+        file: *const ::core::ffi::c_char,
+        line: ::core::ffi::c_int,
+        function: *const ::core::ffi::c_char,
+        errcode: ::core::ffi::c_int,
+        fmt: *const ::core::ffi::c_char,
+        ...
+    );
+}
+unsafe extern "C" {
+    pub fn snd_lib_check(
+        interface: ::core::ffi::c_int,
+        file: *const ::core::ffi::c_char,
+        line: ::core::ffi::c_int,
+        function: *const ::core::ffi::c_char,
+        errcode: ::core::ffi::c_int,
+        fmt: *const ::core::ffi::c_char,
+        ...
+    );
+}
+unsafe extern "C" {
+    pub fn snd_lib_log_set_handler(handler: snd_lib_log_handler_t) -> snd_lib_log_handler_t;
+}
+unsafe extern "C" {
+    pub fn snd_lib_log_set_local(handler: snd_lib_log_handler_t) -> snd_lib_log_handler_t;
+}
+unsafe extern "C" {
+    pub fn snd_lib_log_priority(prio: ::core::ffi::c_int) -> *const ::core::ffi::c_char;
+}
+unsafe extern "C" {
+    pub fn snd_lib_log_interface(interface: ::core::ffi::c_int) -> *const ::core::ffi::c_char;
+}
 pub type snd_lib_error_handler_t = ::core::option::Option<
     unsafe extern "C" fn(
         file: *const ::core::ffi::c_char,
         line: ::core::ffi::c_int,
         function: *const ::core::ffi::c_char,
-        err: ::core::ffi::c_int,
+        errcode: ::core::ffi::c_int,
         fmt: *const ::core::ffi::c_char,
         ...
     ),
@@ -401,7 +455,7 @@ pub type snd_local_error_handler_t = ::core::option::Option<
         file: *const ::core::ffi::c_char,
         line: ::core::ffi::c_int,
         func: *const ::core::ffi::c_char,
-        err: ::core::ffi::c_int,
+        errcode: ::core::ffi::c_int,
         fmt: *const ::core::ffi::c_char,
         arg: *mut __va_list_tag,
     ),
@@ -8147,6 +8201,11 @@ pub union _snd_ump_msg_midi1 {
     pub raw: u32,
 }
 pub type snd_ump_msg_midi1_t = _snd_ump_msg_midi1;
+pub const SND_UMP_MIDI2_NOTE_ATTR_NO_DATA: _bindgen_ty_4 = 0;
+pub const SND_UMP_MIDI2_NOTE_ATTR_MANUFACTURER: _bindgen_ty_4 = 1;
+pub const SND_UMP_MIDI2_NOTE_ATTR_PROFILE: _bindgen_ty_4 = 2;
+pub const SND_UMP_MIDI2_NOTE_ATTR_PITCH79: _bindgen_ty_4 = 3;
+pub type _bindgen_ty_4 = ::core::ffi::c_uint;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_ump_msg_midi2_note {
@@ -8658,6 +8717,9 @@ impl _snd_ump_msg_midi2_per_note_cc {
     }
 }
 pub type snd_ump_msg_midi2_per_note_cc_t = _snd_ump_msg_midi2_per_note_cc;
+pub const SND_UMP_MIDI2_PNMGMT_RESET_CONTROLLERS: _bindgen_ty_5 = 1;
+pub const SND_UMP_MIDI2_PNMGMT_DETACH_CONTROLLERS: _bindgen_ty_5 = 2;
+pub type _bindgen_ty_5 = ::core::ffi::c_uint;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct _snd_ump_msg_midi2_per_note_mgmt {
@@ -12934,6 +12996,127 @@ pub union _snd_ump_msg_utility {
     pub raw: u32,
 }
 pub type snd_ump_msg_utility_t = _snd_ump_msg_utility;
+pub const SND_UMP_MSG_TYPE_UTILITY: _bindgen_ty_6 = 0;
+pub const SND_UMP_MSG_TYPE_SYSTEM: _bindgen_ty_6 = 1;
+pub const SND_UMP_MSG_TYPE_MIDI1_CHANNEL_VOICE: _bindgen_ty_6 = 2;
+pub const SND_UMP_MSG_TYPE_DATA: _bindgen_ty_6 = 3;
+pub const SND_UMP_MSG_TYPE_MIDI2_CHANNEL_VOICE: _bindgen_ty_6 = 4;
+pub const SND_UMP_MSG_TYPE_EXTENDED_DATA: _bindgen_ty_6 = 5;
+pub const SND_UMP_MSG_TYPE_FLEX_DATA: _bindgen_ty_6 = 13;
+pub const SND_UMP_MSG_TYPE_STREAM: _bindgen_ty_6 = 15;
+pub type _bindgen_ty_6 = ::core::ffi::c_uint;
+pub const SND_UMP_MSG_PER_NOTE_RCC: _bindgen_ty_7 = 0;
+pub const SND_UMP_MSG_PER_NOTE_ACC: _bindgen_ty_7 = 1;
+pub const SND_UMP_MSG_RPN: _bindgen_ty_7 = 2;
+pub const SND_UMP_MSG_NRPN: _bindgen_ty_7 = 3;
+pub const SND_UMP_MSG_RELATIVE_RPN: _bindgen_ty_7 = 4;
+pub const SND_UMP_MSG_RELATIVE_NRPN: _bindgen_ty_7 = 5;
+pub const SND_UMP_MSG_PER_NOTE_PITCHBEND: _bindgen_ty_7 = 6;
+pub const SND_UMP_MSG_NOTE_OFF: _bindgen_ty_7 = 8;
+pub const SND_UMP_MSG_NOTE_ON: _bindgen_ty_7 = 9;
+pub const SND_UMP_MSG_POLY_PRESSURE: _bindgen_ty_7 = 10;
+pub const SND_UMP_MSG_CONTROL_CHANGE: _bindgen_ty_7 = 11;
+pub const SND_UMP_MSG_PROGRAM_CHANGE: _bindgen_ty_7 = 12;
+pub const SND_UMP_MSG_CHANNEL_PRESSURE: _bindgen_ty_7 = 13;
+pub const SND_UMP_MSG_PITCHBEND: _bindgen_ty_7 = 14;
+pub const SND_UMP_MSG_PER_NOTE_MGMT: _bindgen_ty_7 = 15;
+pub type _bindgen_ty_7 = ::core::ffi::c_uint;
+pub const SND_UMP_MSG_REALTIME: _bindgen_ty_8 = 240;
+pub const SND_UMP_MSG_SYSEX_START: _bindgen_ty_8 = 240;
+pub const SND_UMP_MSG_MIDI_TIME_CODE: _bindgen_ty_8 = 241;
+pub const SND_UMP_MSG_SONG_POSITION: _bindgen_ty_8 = 242;
+pub const SND_UMP_MSG_SONG_SELECT: _bindgen_ty_8 = 243;
+pub const SND_UMP_MSG_TUNE_REQUEST: _bindgen_ty_8 = 246;
+pub const SND_UMP_MSG_SYSEX_END: _bindgen_ty_8 = 247;
+pub const SND_UMP_MSG_TIMING_CLOCK: _bindgen_ty_8 = 248;
+pub const SND_UMP_MSG_START: _bindgen_ty_8 = 250;
+pub const SND_UMP_MSG_CONTINUE: _bindgen_ty_8 = 251;
+pub const SND_UMP_MSG_STOP: _bindgen_ty_8 = 252;
+pub const SND_UMP_MSG_ACTIVE_SENSING: _bindgen_ty_8 = 254;
+pub const SND_UMP_MSG_RESET: _bindgen_ty_8 = 255;
+pub type _bindgen_ty_8 = ::core::ffi::c_uint;
+pub const SND_UMP_SYSEX_STATUS_SINGLE: _bindgen_ty_9 = 0;
+pub const SND_UMP_SYSEX_STATUS_START: _bindgen_ty_9 = 1;
+pub const SND_UMP_SYSEX_STATUS_CONTINUE: _bindgen_ty_9 = 2;
+pub const SND_UMP_SYSEX_STATUS_END: _bindgen_ty_9 = 3;
+pub type _bindgen_ty_9 = ::core::ffi::c_uint;
+pub const SND_UMP_MIXED_DATA_SET_STATUS_HEADER: _bindgen_ty_10 = 8;
+pub const SND_UMP_MIXED_DATA_SET_STATUS_PAYLOAD: _bindgen_ty_10 = 9;
+pub type _bindgen_ty_10 = ::core::ffi::c_uint;
+pub const SND_UMP_UTILITY_MSG_STATUS_NOOP: _bindgen_ty_11 = 0;
+pub const SND_UMP_UTILITY_MSG_STATUS_JR_CLOCK: _bindgen_ty_11 = 1;
+pub const SND_UMP_UTILITY_MSG_STATUS_JR_TSTAMP: _bindgen_ty_11 = 2;
+pub const SND_UMP_UTILITY_MSG_STATUS_DCTPQ: _bindgen_ty_11 = 3;
+pub const SND_UMP_UTILITY_MSG_STATUS_DC: _bindgen_ty_11 = 4;
+pub type _bindgen_ty_11 = ::core::ffi::c_uint;
+pub const SND_UMP_STREAM_MSG_STATUS_EP_DISCOVERY: _bindgen_ty_12 = 0;
+pub const SND_UMP_STREAM_MSG_STATUS_EP_INFO: _bindgen_ty_12 = 1;
+pub const SND_UMP_STREAM_MSG_STATUS_DEVICE_INFO: _bindgen_ty_12 = 2;
+pub const SND_UMP_STREAM_MSG_STATUS_EP_NAME: _bindgen_ty_12 = 3;
+pub const SND_UMP_STREAM_MSG_STATUS_PRODUCT_ID: _bindgen_ty_12 = 4;
+pub const SND_UMP_STREAM_MSG_STATUS_STREAM_CFG_REQUEST: _bindgen_ty_12 = 5;
+pub const SND_UMP_STREAM_MSG_STATUS_STREAM_CFG: _bindgen_ty_12 = 6;
+pub const SND_UMP_STREAM_MSG_STATUS_FB_DISCOVERY: _bindgen_ty_12 = 16;
+pub const SND_UMP_STREAM_MSG_STATUS_FB_INFO: _bindgen_ty_12 = 17;
+pub const SND_UMP_STREAM_MSG_STATUS_FB_NAME: _bindgen_ty_12 = 18;
+pub const SND_UMP_STREAM_MSG_STATUS_START_CLIP: _bindgen_ty_12 = 32;
+pub const SND_UMP_STREAM_MSG_STATUS_END_CLIP: _bindgen_ty_12 = 33;
+pub type _bindgen_ty_12 = ::core::ffi::c_uint;
+pub const SND_UMP_STREAM_MSG_REQUEST_EP_INFO: _bindgen_ty_13 = 1;
+pub const SND_UMP_STREAM_MSG_REQUEST_DEVICE_INFO: _bindgen_ty_13 = 2;
+pub const SND_UMP_STREAM_MSG_REQUEST_EP_NAME: _bindgen_ty_13 = 4;
+pub const SND_UMP_STREAM_MSG_REQUEST_PRODUCT_ID: _bindgen_ty_13 = 8;
+pub const SND_UMP_STREAM_MSG_REQUEST_STREAM_CFG: _bindgen_ty_13 = 16;
+pub type _bindgen_ty_13 = ::core::ffi::c_uint;
+pub const SND_UMP_STREAM_MSG_REQUEST_FB_INFO: _bindgen_ty_14 = 1;
+pub const SND_UMP_STREAM_MSG_REQUEST_FB_NAME: _bindgen_ty_14 = 2;
+pub type _bindgen_ty_14 = ::core::ffi::c_uint;
+pub const SND_UMP_STREAM_MSG_EP_INFO_CAP_TXJR: _bindgen_ty_15 = 1;
+pub const SND_UMP_STREAM_MSG_EP_INFO_CAP_RXJR: _bindgen_ty_15 = 2;
+pub const SND_UMP_STREAM_MSG_EP_INFO_CAP_MIDI1: _bindgen_ty_15 = 256;
+pub const SND_UMP_STREAM_MSG_EP_INFO_CAP_MIDI2: _bindgen_ty_15 = 512;
+pub type _bindgen_ty_15 = ::core::ffi::c_uint;
+pub const SND_UMP_STREAM_MSG_FORMAT_SINGLE: _bindgen_ty_16 = 0;
+pub const SND_UMP_STREAM_MSG_FORMAT_START: _bindgen_ty_16 = 1;
+pub const SND_UMP_STREAM_MSG_FORMAT_CONTINUE: _bindgen_ty_16 = 2;
+pub const SND_UMP_STREAM_MSG_FORMAT_END: _bindgen_ty_16 = 3;
+pub type _bindgen_ty_16 = ::core::ffi::c_uint;
+pub const SND_UMP_FLEX_DATA_MSG_FORMAT_SINGLE: _bindgen_ty_17 = 0;
+pub const SND_UMP_FLEX_DATA_MSG_FORMAT_START: _bindgen_ty_17 = 1;
+pub const SND_UMP_FLEX_DATA_MSG_FORMAT_CONTINUE: _bindgen_ty_17 = 2;
+pub const SND_UMP_FLEX_DATA_MSG_FORMAT_END: _bindgen_ty_17 = 3;
+pub type _bindgen_ty_17 = ::core::ffi::c_uint;
+pub const SND_UMP_FLEX_DATA_MSG_ADDR_CHANNEL: _bindgen_ty_18 = 0;
+pub const SND_UMP_FLEX_DATA_MSG_ADDR_GROUP: _bindgen_ty_18 = 1;
+pub type _bindgen_ty_18 = ::core::ffi::c_uint;
+pub const SND_UMP_FLEX_DATA_MSG_BANK_SETUP: _bindgen_ty_19 = 0;
+pub const SND_UMP_FLEX_DATA_MSG_BANK_METADATA: _bindgen_ty_19 = 1;
+pub const SND_UMP_FLEX_DATA_MSG_BANK_PERF_TEXT: _bindgen_ty_19 = 2;
+pub type _bindgen_ty_19 = ::core::ffi::c_uint;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_SET_TEMPO: _bindgen_ty_20 = 0;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_SET_TIME_SIGNATURE: _bindgen_ty_20 = 1;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_SET_METRONOME: _bindgen_ty_20 = 2;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_SET_KEY_SIGNATURE: _bindgen_ty_20 = 5;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_SET_CHORD_NAME: _bindgen_ty_20 = 6;
+pub type _bindgen_ty_20 = ::core::ffi::c_uint;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_PROJECT_NAME: _bindgen_ty_21 = 1;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_SONG_NAME: _bindgen_ty_21 = 2;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_MIDI_CLIP_NAME: _bindgen_ty_21 = 3;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_COPYRIGHT_NOTICE: _bindgen_ty_21 = 4;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_COMPOSER_NAME: _bindgen_ty_21 = 5;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_LYRICIST_NAME: _bindgen_ty_21 = 6;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_ARRANGER_NAME: _bindgen_ty_21 = 7;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_PUBLISHER_NAME: _bindgen_ty_21 = 8;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_PRIMARY_PERFORMER: _bindgen_ty_21 = 9;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_ACCOMPANY_PERFORMAER: _bindgen_ty_21 = 10;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_RECORDING_DATE: _bindgen_ty_21 = 11;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_RECORDING_LOCATION: _bindgen_ty_21 = 12;
+pub type _bindgen_ty_21 = ::core::ffi::c_uint;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_LYRICS: _bindgen_ty_22 = 1;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_LYRICS_LANGUAGE: _bindgen_ty_22 = 2;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_RUBY: _bindgen_ty_22 = 3;
+pub const SND_UMP_FLEX_DATA_MSG_STATUS_RUBY_LANGUAGE: _bindgen_ty_22 = 4;
+pub type _bindgen_ty_22 = ::core::ffi::c_uint;
 unsafe extern "C" {
     pub fn snd_ump_msg_sysex_expand(
         ump: *const u32,
@@ -13310,6 +13493,10 @@ pub const SND_SEQ_USER_CLIENT: snd_seq_client_type = 1;
 pub const SND_SEQ_KERNEL_CLIENT: snd_seq_client_type = 2;
 pub type snd_seq_client_type = ::core::ffi::c_uint;
 pub use self::snd_seq_client_type as snd_seq_client_type_t;
+pub const SND_SEQ_CLIENT_LEGACY_MIDI: _bindgen_ty_23 = 0;
+pub const SND_SEQ_CLIENT_UMP_MIDI_1_0: _bindgen_ty_23 = 1;
+pub const SND_SEQ_CLIENT_UMP_MIDI_2_0: _bindgen_ty_23 = 2;
+pub type _bindgen_ty_23 = ::core::ffi::c_uint;
 unsafe extern "C" {
     pub fn snd_seq_client_info_sizeof() -> usize;
 }
@@ -14557,6 +14744,31 @@ unsafe extern "C" {
         array: *mut ::core::ffi::c_void,
     ) -> ::core::ffi::c_int;
 }
+pub const SND_SEQ_EVFLG_RESULT: _bindgen_ty_24 = 0;
+pub const SND_SEQ_EVFLG_NOTE: _bindgen_ty_24 = 1;
+pub const SND_SEQ_EVFLG_CONTROL: _bindgen_ty_24 = 2;
+pub const SND_SEQ_EVFLG_QUEUE: _bindgen_ty_24 = 3;
+pub const SND_SEQ_EVFLG_SYSTEM: _bindgen_ty_24 = 4;
+pub const SND_SEQ_EVFLG_MESSAGE: _bindgen_ty_24 = 5;
+pub const SND_SEQ_EVFLG_CONNECTION: _bindgen_ty_24 = 6;
+pub const SND_SEQ_EVFLG_SAMPLE: _bindgen_ty_24 = 7;
+pub const SND_SEQ_EVFLG_USERS: _bindgen_ty_24 = 8;
+pub const SND_SEQ_EVFLG_INSTR: _bindgen_ty_24 = 9;
+pub const SND_SEQ_EVFLG_QUOTE: _bindgen_ty_24 = 10;
+pub const SND_SEQ_EVFLG_NONE: _bindgen_ty_24 = 11;
+pub const SND_SEQ_EVFLG_RAW: _bindgen_ty_24 = 12;
+pub const SND_SEQ_EVFLG_FIXED: _bindgen_ty_24 = 13;
+pub const SND_SEQ_EVFLG_VARIABLE: _bindgen_ty_24 = 14;
+pub const SND_SEQ_EVFLG_VARUSR: _bindgen_ty_24 = 15;
+pub type _bindgen_ty_24 = ::core::ffi::c_uint;
+pub const SND_SEQ_EVFLG_NOTE_ONEARG: _bindgen_ty_25 = 0;
+pub const SND_SEQ_EVFLG_NOTE_TWOARG: _bindgen_ty_25 = 1;
+pub type _bindgen_ty_25 = ::core::ffi::c_uint;
+pub const SND_SEQ_EVFLG_QUEUE_NOARG: _bindgen_ty_26 = 0;
+pub const SND_SEQ_EVFLG_QUEUE_TICK: _bindgen_ty_26 = 1;
+pub const SND_SEQ_EVFLG_QUEUE_TIME: _bindgen_ty_26 = 2;
+pub const SND_SEQ_EVFLG_QUEUE_VALUE: _bindgen_ty_26 = 3;
+pub type _bindgen_ty_26 = ::core::ffi::c_uint;
 unsafe extern "C" {
     pub fn snd_seq_control_queue(
         seq: *mut snd_seq_t,
