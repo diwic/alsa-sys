@@ -168,9 +168,9 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
 }
 pub const SND_LIB_MAJOR: u32 = 1;
 pub const SND_LIB_MINOR: u32 = 2;
-pub const SND_LIB_SUBMINOR: u32 = 16;
+pub const SND_LIB_SUBMINOR: u32 = 15;
 pub const SND_LIB_EXTRAVER: u32 = 1000000;
-pub const SND_LIB_VERSION_STR: &[u8; 7] = b"1.2.16\0";
+pub const SND_LIB_VERSION_STR: &[u8; 9] = b"1.2.15.3\0";
 pub const SND_ERROR_BEGIN: u32 = 500000;
 pub const SND_ERROR_INCOMPATIBLE_VERSION: u32 = 500000;
 pub const SND_LOG_ERROR: u32 = 1;
@@ -191,8 +191,7 @@ pub const SND_ILOG_SEQUENCER: u32 = 9;
 pub const SND_ILOG_UCM: u32 = 10;
 pub const SND_ILOG_TOPOLOGY: u32 = 11;
 pub const SND_ILOG_ASERVER: u32 = 12;
-pub const SND_ILOG_PCM_PARAMS: u32 = 13;
-pub const SND_ILOG_LAST: u32 = 13;
+pub const SND_ILOG_LAST: u32 = 12;
 pub const SND_PCM_NONBLOCK: u32 = 1;
 pub const SND_PCM_ASYNC: u32 = 2;
 pub const SND_PCM_EINTR: u32 = 128;
