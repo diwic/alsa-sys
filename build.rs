@@ -44,6 +44,7 @@ fn generate_bindings(alsa_library: &pkg_config::Library) {
         .allowlist_function("snd_.*")
         .allowlist_type("_?snd_.*")
         .allowlist_type(".*va_list.*")
+        .allowlist_var("SND_.*")
         .with_codegen_config(codegen_config)
         .clang_args(clang_include_args)
         .header("wrapper.h")
