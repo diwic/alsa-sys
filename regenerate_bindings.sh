@@ -1,3 +1,3 @@
 #!/bin/sh
 
-cargo run --features "use-bindgen" --bin regenerate_bindings
+RUST_LOG=bindgen cargo run --features "use-bindgen" --bin regenerate_bindings
