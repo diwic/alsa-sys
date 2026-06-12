@@ -34,6 +34,7 @@ fn generate_bindings(alsa_library: &pkg_config::Library) {
     let mut codegen_config = bindgen::CodegenConfig::empty();
     codegen_config.insert(bindgen::CodegenConfig::FUNCTIONS);
     codegen_config.insert(bindgen::CodegenConfig::TYPES);
+    codegen_config.insert(bindgen::CodegenConfig::VARS);
 
     let builder = bindgen::Builder::default()
         .use_core()
@@ -45,6 +46,7 @@ fn generate_bindings(alsa_library: &pkg_config::Library) {
         .allowlist_type("_?snd_.*")
         .allowlist_type(".*va_list.*")
         .allowlist_var("SND_.*")
+        .fit_macro_constants(false)
         .with_codegen_config(codegen_config)
         .clang_args(clang_include_args)
         .header("wrapper.h")
