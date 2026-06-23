@@ -3,33 +3,35 @@
 #![allow(non_upper_case_globals)]
 #![no_std]
 
+use core::mem::zeroed;
+
 use libc::{FILE, pid_t, pollfd, timeval};
 
-#[cfg(target_pointer_width = "64")]
-#[derive(Copy, Clone, Eq, PartialEq, Default)]
+#[derive(Copy, Clone)]
 #[repr(C)]
-pub struct timespec([i64; 2]);
+pub union timespec {
+    t: libc::timespec,
+    t64: [i64; 2],
+}
 
-#[cfg(target_pointer_width = "64")]
+#[cfg(not(target_pointer_width = "32"))]
 impl timespec {
     #[inline(always)]
-    pub fn tv_sec(&self) -> i64 { self.0[0] }
+    pub fn tv_sec(&self) -> i64 { unsafe { self.t.tv_sec as i64 } }
     #[inline(always)]
-    pub fn tv_nsec(&self) -> i64 { self.0[1] }
+    pub fn tv_nsec(&self) -> i64 { unsafe { self.t.tv_nsec as i64 } }
 }
 
 #[cfg(target_pointer_width = "32")]
-#[derive(Copy, Clone, Eq, PartialEq, Default)]
-#[repr(C)]
-pub struct timespec([i32; 4]);
-
-#[cfg(target_pointer_width = "32")]
 impl timespec {
-    fn is64(&self) -> bool { self.0[2] != 0 || self.0[3] != 0 }
-    pub fn tv_sec(&self) -> i64 { self.0[0] as i64 }
-    pub fn tv_nsec(&self) -> i64 { if self.is64() { (self.0[2] + self.0[3]) as i64 } else { self.0[1] as i64 } }
+    unsafe fn is64(&self) -> bool { self.t64[1] != 0 }
+    pub fn tv_sec(&self) -> i64 { unsafe { if self.is64() { self.t64[0] } else { self.t.tv_sec as i64 } } }
+    pub fn tv_nsec(&self) -> i64 { unsafe { if self.is64() { self.t64[1] } else { self.t.tv_nsec as i64 } } }
 }
 
+impl Default for timespec {
+    fn default() -> Self { unsafe { zeroed() } }
+}
 
 #[cfg(feature = "use-bindgen")]
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
