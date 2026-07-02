@@ -21,9 +21,11 @@ libc = "0.2.186"
 [build-dependencies]
 pkg-config = "0.3.33"
 bindgen = { version = "0.72", optional = true }
+cc = "1.2"
 
 [features]
 use-bindgen = ["bindgen"]
+extra_traits = ["libc/extra_traits"]
 
 [[bin]]
 name = "regenerate_bindings"
