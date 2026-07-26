@@ -41,33 +41,49 @@ fn probe_time64() {
         return;
     }
 
-    let probe_path = std::path::Path::new(&std::env::var("OUT_DIR").unwrap()).join("time64_probe.c");
-    if let Err(e) = std::fs::write(
-        &probe_path,
+    let out_dir = std::path::PathBuf::from(std::env::var("OUT_DIR").unwrap());
+
+    // Checks the type, not just that a compiler exists: an unusable <time.h>
+    // would fail the probe below and be read as pre-transition, which is the
+    // direction that segfaults.
+    if !compiles(
+        &out_dir,
+        "time64_control.c",
         "#include <time.h>\n\
-         #if defined(__TIMESIZE) && __TIMESIZE == 64\n\
-         alsa_sys_time64=yes\n\
-         #else\n\
-         alsa_sys_time64=no\n\
-         #endif\n",
+         _Static_assert(sizeof(struct timespec) == 8\n\
+                     || sizeof(struct timespec) == 16, \"unexpected timespec\");\n",
     ) {
-        println!("cargo:warning=alsa-sys: could not write time64 probe ({e}), assuming legacy 32-bit time_t");
+        println!("cargo:warning=alsa-sys: could not probe glibc's time_t width, assuming legacy 32-bit time_t");
         return;
     }
 
-    // On failure, default to 32-bit time_t. A false negative is a no-op, a
-    // false positive causes segfaults.
-    let expanded = match cc::Build::new().file(&probe_path).try_expand() {
-        Ok(bytes) => bytes,
-        Err(e) => {
-            println!("cargo:warning=alsa-sys: could not probe glibc time_t width ({e}), assuming legacy 32-bit time_t");
-            return;
-        }
-    };
-
-    if String::from_utf8_lossy(&expanded).contains("alsa_sys_time64=yes") {
+    // 16 bytes exactly when the 64-bit time_t ABI is in effect, from the port
+    // default or from _TIME_BITS=64 in the toolchain, as on Debian trixie.
+    // __TIMESIZE sees neither: it stays 32 on every architecture that went
+    // through the transition. Compiles but never runs, so cross builds work.
+    if compiles(
+        &out_dir,
+        "time64_probe.c",
+        "#include <time.h>\n\
+         _Static_assert(sizeof(struct timespec) == 16, \"64-bit time_t\");\n",
+    ) {
         println!("cargo:rustc-cfg=alsa_sys_time64");
     }
+}
+
+/// Compiles a snippet against the target's headers. Nothing is linked or run.
+fn compiles(out_dir: &std::path::Path, name: &str, source: &str) -> bool {
+    let path = out_dir.join(name);
+    if std::fs::write(&path, source).is_err() {
+        return false;
+    }
+    cc::Build::new()
+        .file(&path)
+        .cargo_metadata(false)
+        .cargo_warnings(false)
+        .warnings(false)
+        .try_compile(name.trim_end_matches(".c"))
+        .is_ok()
 }
 
 #[cfg(feature = "use-bindgen")]
