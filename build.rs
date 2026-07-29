@@ -57,10 +57,10 @@ fn probe_time64(alsa_library: &pkg_config::Library) {
     ) {
         panic!(
             "alsa-sys could not compile a probe measuring sizeof(snd_htimestamp_t) \
-             against the ALSA headers. On 32-bit glibc targets that size decides \
-             whether libasound writes 8 or 16 bytes per timestamp, and guessing \
-             wrong corrupts memory, so the build stops instead.\n\
-             Check that the C compiler and the ALSA headers for the target work.\n\n\
+             against the ALSA headers.\n
+             Check that the C compiler and the ALSA headers are installed.
+             If you still have a problem, please post an issue here:\n
+             https://github.com/diwic/alsa-sys\n\n
              {}",
             e
         );

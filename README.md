@@ -8,6 +8,8 @@ is a `use-bindings` feature to do so.
 
 ## Installing build dependencies
 
+On 32-bit platforms, you also need a working C compiler.
+
 ### Debian/Ubuntu/Mint
 
 ```
