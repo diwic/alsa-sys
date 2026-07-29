@@ -4,8 +4,6 @@ extern crate pkg_config;
 extern crate bindgen;
 
 fn main() {
-    probe_time64();
-
     match pkg_config::Config::new().statik(false).probe("alsa") {
         Err(pkg_config::Error::Failure { command, output }) => panic!(
             "Pkg-config failed - usually this is because alsa development headers are not installed.\n\n\
@@ -14,17 +12,18 @@ fn main() {
             For Archlinux users:\n# pacman -S alsa-lib\n\n
             pkg_config details:\n{}\n", pkg_config::Error::Failure { command, output }),
         Err(e) => panic!("{}", e),
-        Ok(_alsa_library) => {
+        Ok(alsa_library) => {
+            probe_time64(&alsa_library);
             #[cfg(feature = "use-bindgen")]
-            generate_bindings(&_alsa_library);
+            generate_bindings(&alsa_library);
         }
     };
 }
 
-// 32-bit glibc's struct timespec is 8 or 16 bytes depending on the time64
-// transition; libc::timespec assumes 8, so ALSA can write past it and
-// segfault on 32-bit targets with time64.
-fn probe_time64() {
+// 32-bit glibc's snd_htimestamp_t (a struct timespec) is 8 or 16 bytes
+// depending on the time64 transition; libc::timespec assumes 8, so ALSA can
+// write past it and segfault on 32-bit targets with a 64-bit time_t.
+fn probe_time64(alsa_library: &pkg_config::Library) {
     println!("cargo:rustc-check-cfg=cfg(alsa_sys_time64)");
 
     let target_os = std::env::var("CARGO_CFG_TARGET_OS");
@@ -41,33 +40,67 @@ fn probe_time64() {
         return;
     }
 
-    let probe_path = std::path::Path::new(&std::env::var("OUT_DIR").unwrap()).join("time64_probe.c");
-    if let Err(e) = std::fs::write(
-        &probe_path,
-        "#include <time.h>\n\
-         #if defined(__TIMESIZE) && __TIMESIZE == 64\n\
-         alsa_sys_time64=yes\n\
-         #else\n\
-         alsa_sys_time64=no\n\
-         #endif\n",
+    let out_dir = std::path::PathBuf::from(std::env::var("OUT_DIR").unwrap());
+    let include_paths = &alsa_library.include_paths;
+
+    // Measures the exact type libasound writes through. If even this control
+    // snippet does not compile, there is no safe width to assume: guessing 8
+    // can segfault and guessing 16 yields garbage timestamps, so stop the
+    // build with a diagnosable error instead.
+    if let Err(e) = try_compile(
+        &out_dir,
+        include_paths,
+        "time64_control.c",
+        "#include <alsa/asoundlib.h>\n\
+         _Static_assert(sizeof(snd_htimestamp_t) == 8\n\
+                     || sizeof(snd_htimestamp_t) == 16, \"unexpected snd_htimestamp_t\");\n",
     ) {
-        println!("cargo:warning=alsa-sys: could not write time64 probe ({e}), assuming legacy 32-bit time_t");
-        return;
+        panic!(
+            "alsa-sys could not compile a probe measuring sizeof(snd_htimestamp_t) \
+             against the ALSA headers. On 32-bit glibc targets that size decides \
+             whether libasound writes 8 or 16 bytes per timestamp, and guessing \
+             wrong corrupts memory, so the build stops instead.\n\
+             Check that the C compiler and the ALSA headers for the target work.\n\n\
+             {}",
+            e
+        );
     }
 
-    // On failure, default to 32-bit time_t. A false negative is a no-op, a
-    // false positive causes segfaults.
-    let expanded = match cc::Build::new().file(&probe_path).try_expand() {
-        Ok(bytes) => bytes,
-        Err(e) => {
-            println!("cargo:warning=alsa-sys: could not probe glibc time_t width ({e}), assuming legacy 32-bit time_t");
-            return;
-        }
-    };
-
-    if String::from_utf8_lossy(&expanded).contains("alsa_sys_time64=yes") {
+    // 16 bytes exactly when the 64-bit time_t ABI is in effect, from the port
+    // default or from _TIME_BITS=64 in the toolchain, as on Debian trixie.
+    // __TIMESIZE sees neither: it stays 32 on every architecture that went
+    // through the transition. Compiles but never runs, so cross builds work.
+    if try_compile(
+        &out_dir,
+        include_paths,
+        "time64_probe.c",
+        "#include <alsa/asoundlib.h>\n\
+         _Static_assert(sizeof(snd_htimestamp_t) == 16, \"64-bit time_t\");\n",
+    )
+    .is_ok()
+    {
         println!("cargo:rustc-cfg=alsa_sys_time64");
     }
+}
+
+/// Compiles a snippet against the target's ALSA headers. Nothing is linked
+/// or run.
+fn try_compile(
+    out_dir: &std::path::Path,
+    include_paths: &[std::path::PathBuf],
+    name: &str,
+    source: &str,
+) -> Result<(), String> {
+    let path = out_dir.join(name);
+    std::fs::write(&path, source).map_err(|e| e.to_string())?;
+    cc::Build::new()
+        .file(&path)
+        .includes(include_paths)
+        .cargo_metadata(false)
+        .cargo_warnings(false)
+        .warnings(false)
+        .try_compile(name.trim_end_matches(".c"))
+        .map_err(|e| e.to_string())
 }
 
 #[cfg(feature = "use-bindgen")]
